@@ -705,6 +705,14 @@ img {
     transform: translateX(4px);
 }
 
+.articles-more {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+    flex-wrap: wrap;
+}
+
 /* --- PLATFORMS SECTION --- */
 .platforms-section {
     padding: 8rem 0;
@@ -760,6 +768,12 @@ img {
 .platform-card.yntv-instagram::before {
     background-color: #E1306C; /* Instagram Pink */
 }
+.platform-card.linkedin-personal::before {
+    background-color: #0A66C2; /* LinkedIn Blue */
+}
+.platform-card.kanal3-columnist::before {
+    background-color: #FF6F00; /* Kanal 3 TV Orange */
+}
 .platform-card.contact-card::before {
     background-color: var(--color-accent);
 }
@@ -779,6 +793,12 @@ img {
 }
 .yntv-instagram .platform-icon {
     color: #E1306C;
+}
+.linkedin-personal .platform-icon {
+    color: #0A66C2;
+}
+.kanal3-columnist .platform-icon {
+    color: #FF6F00;
 }
 .yntv-web .platform-icon {
     color: var(--color-secondary);
@@ -1308,7 +1328,9 @@ body.lang-en .lang-tr {
 @media (max-width: 768px) {
     .lang-switcher {
         margin-left: auto;
-        margin-right: 1rem;
+        margin-right: 0.8rem;
+        transform: scale(0.9);
+        transform-origin: right center;
     }
 }
 
