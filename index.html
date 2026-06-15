@@ -35,7 +35,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="lang-tr">
 
     <!-- Background Grid & Signals Effect -->
     <div class="bg-grid"></div>
@@ -48,15 +48,38 @@
                 <span class="logo-text">ARA</span>
                 <span class="logo-dot">.</span>
             </a>
+            
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="#hakkinda" class="nav-link">Hakkında</a></li>
-                    <li><a href="#kariyer" class="nav-link">Kariyer</a></li>
-                    <li><a href="#yazilar" class="nav-link">Yazılar</a></li>
-                    <li><a href="#platformlar" class="nav-link">Platformlar</a></li>
-                    <li><a href="#iletisim" class="nav-link">İletişim</a></li>
+                    <li><a href="#hakkinda" class="nav-link">
+                        <span class="lang-tr">Hakkında</span>
+                        <span class="lang-en">About</span>
+                    </a></li>
+                    <li><a href="#kariyer" class="nav-link">
+                        <span class="lang-tr">Kariyer</span>
+                        <span class="lang-en">Career</span>
+                    </a></li>
+                    <li><a href="#yazilar" class="nav-link">
+                        <span class="lang-tr">Yazılar</span>
+                        <span class="lang-en">Articles</span>
+                    </a></li>
+                    <li><a href="#platformlar" class="nav-link">
+                        <span class="lang-tr">Platformlar</span>
+                        <span class="lang-en">Platforms</span>
+                    </a></li>
+                    <li><a href="#iletisim" class="nav-link">
+                        <span class="lang-tr">İletişim</span>
+                        <span class="lang-en">Contact</span>
+                    </a></li>
                 </ul>
             </nav>
+
+            <!-- Language Switcher -->
+            <div class="lang-switcher">
+                <button class="lang-btn active" data-lang="tr">TR</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+
             <button class="mobile-nav-toggle" aria-label="Menüyü Aç/Kapat">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -77,15 +100,24 @@
                         Ahmet Rıfat <span class="text-gradient">Albuz</span>
                     </h1>
                     <div class="hero-subtitle">
-                        <span class="typewriter-text" data-words='["Gazeteci", "Program Yapımcısı", "Köşe Yazarı", "İletişim Danışmanı"]'></span>
+                        <span class="typewriter-text" 
+                              data-words-tr='["Gazeteci", "Program Yapımcısı", "Köşe Yazarı", "İletişim Danışmanı"]'
+                              data-words-en='["Journalist", "Program Producer", "Columnist", "Communication Consultant"]'></span>
                         <span class="cursor">|</span>
                     </div>
                     <p class="hero-description">
-                        Geleneksel medyanın mutfağından yetişip, dijital yayıncılığın geleceğini şekillendiren; kelimelerin, sesin ve görüntünün gücüne inanan bir hikaye anlatıcısı.
+                        <span class="lang-tr">Geleneksel medyanın mutfağından yetişip, dijital yayıncılığın geleceğini şekillendiren; kelimelerin, sesin ve görüntünün gücüne inanan bir hikaye anlatıcısı.</span>
+                        <span class="lang-en">A storyteller who came from the kitchen of traditional media, shaping the future of digital broadcasting; believing in the power of words, sound, and visuals.</span>
                     </p>
                     <div class="hero-actions">
-                        <a href="#iletisim" class="btn btn-primary" id="hero-cta-btn">Benimle İletişime Geçin</a>
-                        <a href="#hakkinda" class="btn btn-secondary" id="hero-explore-btn">Hikayemi Keşfedin</a>
+                        <a href="#iletisim" class="btn btn-primary" id="hero-cta-btn">
+                            <span class="lang-tr">Benimle İletişime Geçin</span>
+                            <span class="lang-en">Contact Me</span>
+                        </a>
+                        <a href="#hakkinda" class="btn btn-secondary" id="hero-explore-btn">
+                            <span class="lang-tr">Hikayemi Keşfedin</span>
+                            <span class="lang-en">Explore My Story</span>
+                        </a>
                     </div>
                 </div>
                 <div class="hero-visual">
@@ -100,7 +132,10 @@
                 <span class="mouse">
                     <span class="wheel"></span>
                 </span>
-                <span class="scroll-text">Aşağı Kaydır</span>
+                <span class="scroll-text">
+                    <span class="lang-tr">Aşağı Kaydır</span>
+                    <span class="lang-en">Scroll Down</span>
+                </span>
             </div>
         </section>
 
@@ -109,39 +144,68 @@
             <div class="container">
                 <div class="section-header">
                     <span class="section-mono">// 01. PORTRE</span>
-                    <h2 class="section-title">Hikayem</h2>
+                    <h2 class="section-title">
+                        <span class="lang-tr">Hikayem</span>
+                        <span class="lang-en">My Story</span>
+                    </h2>
                 </div>
                 <div class="about-grid">
                     <div class="about-text-column">
                         <p class="lead-text">
-                            Burdur’dan Ankara’ya, Ankara’dan Londra’ya uzanan; ses frekanslarından ekran piksellerine taşınan bir gazetecilik serüveni.
+                            <span class="lang-tr">Burdur’dan Ankara’ya, Ankara’dan Londra’ya uzanan; ses frekanslarından ekran piksellerine taşınan bir gazetecilik serüveni.</span>
+                            <span class="lang-en">A journalism journey extending from Burdur to Ankara, and Ankara to London; carried from sound frequencies to screen pixels.</span>
                         </p>
-                        <p>
-                            1983 yılında Burdur'da dünyaya geldim. Medyaya ve iletişime duyduğum merak beni Selçuk Üniversitesi Radyo-Sinema-Televizyon bölümüne (2003-2007) yönlendirdi. Üniversite yıllarında Nevşehir'de radyo mikrofonunun arkasında başlayan yayıncılık tutkum, mezuniyet sonrası Londra'ya uzandı.
-                        </p>
-                        <p>
-                            Londra Türk Radyosu'nda Haber Koordinatörü olarak görev alırken, aynı zamanda dil eğitimiyle vizyonumu genişlettim. 2011 yılında Türkiye'ye dönerek TVNET bünyesinde haber editörlüğü, program yapımcılığı ve Ankara Haber Müdürlüğü görevlerini üstlendim. Yeni Şafak gazetesinde yazdığım yazılar ve Kanal 3 TV'de hazırladığım programlarla gündemin nabzını tuttum.
-                        </p>
-                        <p>
-                            2018'de dijital dönüşümün potansiyelini öngörerek <strong>yeninesil.tv</strong>'yi kurdum. Ankara Valisi Sayın Vasip Şahin'in Basın Danışmanlığı ve Türkiye Büyük Millet Meclisi'nde (TBMM) danışmanlık görevlerinde bulunarak kamu iletişimi alanında önemli tecrübeler edindim. Bugün, Yeni Nesil TV bünyesinde köşe yazarlığı, içerik üreticiliği ve kurumsal iletişim danışmanlığına devam ediyorum.
-                        </p>
+                        <div class="lang-tr">
+                            <p>
+                                1983 yılında Burdur'da dünyaya geldim. Medyaya ve iletişime duyduğum merak beni Selçuk Üniversitesi Radyo-Sinema-Televizyon bölümüne (2003-2007) yönlendirdi. Üniversite yıllarında Nevşehir'de radyo mikrofonunun arkasında başlayan yayıncılık tutkum, mezuniyet sonrası Londra'ya uzandı.
+                            </p>
+                            <p>
+                                Londra Türk Radyosu'nda Haber Koordinatörü olarak görev alırken, aynı zamanda dil eğitimiyle vizyonumu genişlettim. 2011 yılında Türkiye'ye dönerek TVNET bünyesinde haber editörlüğü, program yapımcılığı ve Ankara Haber Müdürlüğü görevlerini üstlendim. Yeni Şafak gazetesinde yazdığım yazılar ve Kanal 3 TV'de hazırladığım programlarla gündemin nabzını tuttum.
+                            </p>
+                            <p>
+                                2018'de dijital dönüşümün potansiyelini öngörerek <strong>yeninesil.tv</strong>'yi kurdum. Ankara Valisi Sayın Vasip Şahin'in Basın Danışmanlığı ve Türkiye Büyük Millet Meclisi'nde (TBMM) danışmanlık görevlerinde bulunarak kamu iletişimi alanında önemli tecrübeler edindim. Bugün, Yeni Nesil TV bünyesinde köşe yazarlığı, içerik üreticiliği ve kurumsal iletişim danışmanlığına devam ediyorum.
+                            </p>
+                        </div>
+                        <div class="lang-en">
+                            <p>
+                                I was born in Burdur in 1983. My curiosity for media and communication led me to the Radio-Cinema-Television department of Selçuk University (2003-2007). My passion for broadcasting, which started behind a radio microphone in Nevşehir during my university years, extended to London after graduation.
+                            </p>
+                            <p>
+                                While working as a News Coordinator at London Turkish Radio, I also broadened my vision with language education. Returning to Turkey in 2011, I served as a news editor, program producer, and Ankara News Director at TVNET. I kept my finger on the pulse of the agenda with my columns in Yeni Şafak newspaper and programs I prepared for Kanal 3 TV.
+                            </p>
+                            <p>
+                                In 2018, anticipating the potential of digital transformation, I founded <strong>yeninesil.tv</strong>. I gained significant experience in public communication by serving as Press Advisor to Ankara Governor Mr. Vasip Şahin and as chief advisor in the Grand National Assembly of Turkey (TBMM). Today, I continue my work in columnist writing, content creation, and corporate communication consulting under Yeni Nesil TV.
+                            </p>
+                        </div>
                     </div>
                     <div class="about-stats-column">
                         <div class="stat-card">
                             <h3 class="stat-number">20+</h3>
-                            <p class="stat-label">Yıllık Sektör Deneyimi</p>
+                            <p class="stat-label">
+                                <span class="lang-tr">Yıllık Sektör Deneyimi</span>
+                                <span class="lang-en">Years of Experience</span>
+                            </p>
                         </div>
                         <div class="stat-card">
                             <h3 class="stat-number">119K+</h3>
-                            <p class="stat-label">Sosyal Medya Erişimi</p>
+                            <p class="stat-label">
+                                <span class="lang-tr">Sosyal Medya Erişimi</span>
+                                <span class="lang-en">Social Media Reach</span>
+                            </p>
                         </div>
                         <div class="stat-card">
                             <h3 class="stat-number">300+</h3>
-                            <p class="stat-label">Hazırlanan Yayın & Program</p>
+                            <p class="stat-label">
+                                <span class="lang-tr">Hazırlanan Yayın & Program</span>
+                                <span class="lang-en">Programs Produced</span>
+                            </p>
                         </div>
                         <div class="stat-card">
                             <h3 class="stat-number">1</h3>
-                            <p class="stat-label">Kurucu Platform (yeninesil.tv)</p>
+                            <p class="stat-label">
+                                <span class="lang-tr">Kurucu Platform (yeninesil.tv)</span>
+                                <span class="lang-en">Founded Platform (yeninesil.tv)</span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -153,7 +217,10 @@
             <div class="container">
                 <div class="section-header">
                     <span class="section-mono">// 02. YOLCULUK</span>
-                    <h2 class="section-title">Kariyer Zaman Çizelgesi</h2>
+                    <h2 class="section-title">
+                        <span class="lang-tr">Kariyer Zaman Çizelgesi</span>
+                        <span class="lang-en">Career Timeline</span>
+                    </h2>
                 </div>
                 
                 <div class="timeline">
@@ -161,10 +228,19 @@
                     <div class="timeline-item">
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
-                            <span class="timeline-date">2026 - Günümüz</span>
-                            <h3 class="timeline-title">Kurumsal İletişim Danışmanı & yeninesil.tv Yazarı</h3>
-                            <h4 class="timeline-subtitle">Yeni Nesil TV & Bağımsız Danışmanlık</h4>
-                            <p>Markaların ve kurumların dijital dönüşüm stratejilerini yönetmekte, yeninesil.tv platformunda haftalık gündem, teknoloji ve toplum üzerine köşe yazıları kaleme almaktayım.</p>
+                            <span class="timeline-date">2026 - <span class="lang-tr">Günümüz</span><span class="lang-en">Present</span></span>
+                            <h3 class="timeline-title">
+                                <span class="lang-tr">Kurumsal İletişim Danışmanı & yeninesil.tv Yazarı</span>
+                                <span class="lang-en">Corporate Communication Consultant & Writer</span>
+                            </h3>
+                            <h4 class="timeline-subtitle">
+                                <span class="lang-tr">Yeni Nesil TV & Bağımsız Danışmanlık</span>
+                                <span class="lang-en">Yeni Nesil TV & Independent Consulting</span>
+                            </h4>
+                            <p>
+                                <span class="lang-tr">Markaların ve kurumların dijital dönüşüm stratejilerini yönetmekte, yeninesil.tv platformunda haftalık gündem, teknoloji ve toplum üzerine köşe yazıları kaleme almaktayım.</span>
+                                <span class="lang-en">Managing digital transformation strategies for brands and institutions, and writing weekly columns on current affairs, technology, and society on yeninesil.tv.</span>
+                            </p>
                         </div>
                     </div>
 
@@ -173,9 +249,18 @@
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
                             <span class="timeline-date">2023 - 2025</span>
-                            <h3 class="timeline-title">Milletvekili Başdanışmanı</h3>
-                            <h4 class="timeline-subtitle">Türkiye Büyük Millet Meclisi (TBMM)</h4>
-                            <p>TBMM bünyesinde AK Parti Denizli Milletvekili Nilgün Ök'ün 1. Danışmanı olarak yasama çalışmaları, basın ilişkileri, sosyal medya yönetimi ve stratejik iletişim süreçlerini yürüttüm.</p>
+                            <h3 class="timeline-title">
+                                <span class="lang-tr">Milletvekili Başdanışmanı</span>
+                                <span class="lang-en">Chief Advisor to Member of Parliament</span>
+                            </h3>
+                            <h4 class="timeline-subtitle">
+                                <span class="lang-tr">Türkiye Büyük Millet Meclisi (TBMM)</span>
+                                <span class="lang-en">Grand National Assembly of Turkey (TBMM)</span>
+                            </h4>
+                            <p>
+                                <span class="lang-tr">TBMM bünyesinde AK Parti Denizli Milletvekili Nilgün Ök'ün 1. Danışmanı olarak yasama çalışmaları, basın ilişkileri, sosyal medya yönetimi ve stratejik iletişim süreçlerini yürüttüm.</span>
+                                <span class="lang-en">Served as the 1st Advisor to AK Party Denizli MP Nilgün Ök within the TBMM, managing legislative work, press relations, social media, and strategic communication processes.</span>
+                            </p>
                         </div>
                     </div>
 
@@ -184,9 +269,18 @@
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
                             <span class="timeline-date">2020 - 2021</span>
-                            <h3 class="timeline-title">Ankara Valisi Basın Danışmanı</h3>
-                            <h4 class="timeline-subtitle">Ankara Valiliği</h4>
-                            <p>Ankara Valisi Sayın Vasip Şahin'in Basın Danışmanlığı görevini üstlenerek valiliğin tüm medya ilişkilerini, basın açıklamalarını, kriz iletişimini ve kamu bilgilendirme faaliyetlerini organize ettim.</p>
+                            <h3 class="timeline-title">
+                                <span class="lang-tr">Ankara Valisi Basın Danışmanı</span>
+                                <span class="lang-en">Press Advisor to the Governor of Ankara</span>
+                            </h3>
+                            <h4 class="timeline-subtitle">
+                                <span class="lang-tr">Ankara Valiliği</span>
+                                <span class="lang-en">Ankara Governorate</span>
+                            </h4>
+                            <p>
+                                <span class="lang-tr">Ankara Valisi Sayın Vasip Şahin'in Basın Danışmanlığı görevini üstlenerek valiliğin tüm medya ilişkilerini, basın açıklamalarını, kriz iletişimini ve kamu bilgilendirme faaliyetlerini organize ettim.</span>
+                                <span class="lang-en">Served as Press Advisor to the Governor of Ankara, Mr. Vasip Şahin, organizing all media relations, press releases, crisis communication, and public information activities.</span>
+                            </p>
                         </div>
                     </div>
 
@@ -194,10 +288,16 @@
                     <div class="timeline-item">
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
-                            <span class="timeline-date">2018 - Günümüz</span>
-                            <h3 class="timeline-title">Kurucu & Genel Yayın Yönetmeni</h3>
+                            <span class="timeline-date">2018 - <span class="lang-tr">Günümüz</span><span class="lang-en">Present</span></span>
+                            <h3 class="timeline-title">
+                                <span class="lang-tr">Kurucu & Genel Yayın Yönetmeni</span>
+                                <span class="lang-en">Founder & Editor-in-Chief</span>
+                            </h3>
                             <h4 class="timeline-subtitle">yeninesil.tv</h4>
-                            <p>Dijital medyanın yükselişiyle birlikte yeni nesil yayıncılık anlayışını hayata geçirmek üzere yeninesil.tv'yi kurdum. Gündem, teknoloji, spor ve kültürel içeriklerin dijital platformlardaki üretimini yönetiyorum.</p>
+                            <p>
+                                <span class="lang-tr">Dijital medyanın yükselişiyle birlikte yeni nesil yayıncılık anlayışını hayata geçirmek üzere yeninesil.tv'yi kurdum. Gündem, teknoloji, spor ve kültürel içeriklerin dijital platformlardaki üretimini yönetiyorum.</span>
+                                <span class="lang-en">Founded yeninesil.tv to implement a new generation broadcasting approach with the rise of digital media. Managing the production of news, technology, sports, and cultural content on digital platforms.</span>
+                            </p>
                         </div>
                     </div>
 
@@ -206,9 +306,15 @@
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
                             <span class="timeline-date">2011 - 2018</span>
-                            <h3 class="timeline-title">Haber Editörü, Program Yapımcısı, Ankara Haber Müdürü</h3>
+                            <h3 class="timeline-title">
+                                <span class="lang-tr">Haber Editörü, Program Yapımcısı, Ankara Haber Müdürü</span>
+                                <span class="lang-en">News Editor, Program Producer, Ankara News Director</span>
+                            </h3>
                             <h4 class="timeline-subtitle">TVNET / Yeni Şafak / Kanal 3 TV</h4>
-                            <p>Televizyon yayıncılığının her aşamasında aktif görev aldım. Ankara Haber Müdürlüğü yaparken, köşe yazılarımla basılı medyaya katkıda bulundum ve televizyon programları hazırlayıp sundum.</p>
+                            <p>
+                                <span class="lang-tr">Televizyon yayıncılığının her aşamasında aktif görev aldım. Ankara Haber Müdürlüğü yaparken, köşe yazılarımla basılı medyaya katkıda bulundum ve televizyon programları hazırlayıp sundum.</span>
+                                <span class="lang-en">Active roles in every stage of television broadcasting. Served as Ankara News Director, contributed to print media with columns, and hosted TV programs.</span>
+                            </p>
                         </div>
                     </div>
 
@@ -217,9 +323,18 @@
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
                             <span class="timeline-date">2008 - 2010</span>
-                            <h3 class="timeline-title">Haber Koordinatörü & Sunucu</h3>
-                            <h4 class="timeline-subtitle">Londra Türk Radyosu (LTR) - İngiltere</h4>
-                            <p>İngiltere'de yaşayan Türk toplumuna yönelik yayın yapan LTR bünyesinde haber bültenlerini hazırladım, özel röportajlar ve canlı yayınlar gerçekleştirdim.</p>
+                            <h3 class="timeline-title">
+                                <span class="lang-tr">Haber Koordinatörü & Sunucu</span>
+                                <span class="lang-en">News Coordinator & Presenter</span>
+                            </h3>
+                            <h4 class="timeline-subtitle">
+                                <span class="lang-tr">Londra Türk Radyosu (LTR) - İngiltere</span>
+                                <span class="lang-en">London Turkish Radio (LTR) - UK</span>
+                            </h4>
+                            <p>
+                                <span class="lang-tr">İngiltere'de yaşayan Türk toplumuna yönelik yayın yapan LTR bünyesinde haber bültenlerini hazırladım, özel röportajlar ve canlı yayınlar gerçekleştirdim.</span>
+                                <span class="lang-en">Prepared news bulletins, conducted special interviews, and hosted live broadcasts at LTR, broadcasting for the Turkish community in the UK.</span>
+                            </p>
                         </div>
                     </div>
 
@@ -228,9 +343,18 @@
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
                             <span class="timeline-date">2003 - 2007</span>
-                            <h3 class="timeline-title">Radyo Programcısı & Üniversite Eğitimi</h3>
-                            <h4 class="timeline-subtitle">Selçuk Üniversitesi / Nevşehir Radyoları</h4>
-                            <p>İletişim fakültesinde eğitim alırken yerel ve bölgesel radyolarda yapımcılık ve programcılık yaparak mesleğe ilk adımlarımı attım.</p>
+                            <h3 class="timeline-title">
+                                <span class="lang-tr">Radyo Programcısı & Üniversite Eğitimi</span>
+                                <span class="lang-en">Radio Presenter & University Education</span>
+                            </h3>
+                            <h4 class="timeline-subtitle">
+                                <span class="lang-tr">Selçuk Üniversitesi / Nevşehir Radyoları</span>
+                                <span class="lang-en">Selçuk University / Nevşehir Radio Stations</span>
+                            </h4>
+                            <p>
+                                <span class="lang-tr">İletişim fakültesinde eğitim alırken yerel ve bölgesel radyolarda yapımcılık ve programcılık yaparak mesleğe ilk adımlarımı attım.</span>
+                                <span class="lang-en">Took first steps into the profession by producing and presenting programs on local and regional radio stations while studying at the faculty of communication.</span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -242,42 +366,69 @@
             <div class="container">
                 <div class="section-header">
                     <span class="section-mono">// 03. KALEMİNDEN</span>
-                    <h2 class="section-title">Son Köşe Yazıları</h2>
+                    <h2 class="section-title">
+                        <span class="lang-tr">Son Köşe Yazıları</span>
+                        <span class="lang-en">Recent Columns</span>
+                    </h2>
                 </div>
                 <div class="articles-grid">
                     <!-- Article 1 -->
                     <article class="article-card">
                         <div class="article-content">
-                            <span class="article-date"><i class="far fa-calendar-alt"></i> 3 Haziran 2026</span>
-                            <h3 class="article-title">Stadyum Rekorlarından Kalp Odacıklarına...</h3>
+                            <span class="article-date"><i class="far fa-calendar-alt"></i> <span class="lang-tr">3 Haziran 2026</span><span class="lang-en">June 3, 2026</span></span>
+                            <h3 class="article-title">
+                                <span class="lang-tr">Stadyum Rekorlarından Kalp Odacıklarına...</span>
+                                <span class="lang-en">From Stadium Records to Heart Chambers...</span>
+                            </h3>
                             <p class="article-excerpt">
-                                Kitlelerin coşkusuyla çarpan stadyumların gürültüsünden, insanın kendi içindeki o en sessiz, en derin odacığa giden yolculuk. Modern dünyanın ritminde kaybettiklerimiz ve kalbimizde yeniden bulduklarımız...
+                                <span class="lang-tr">Kitlelerin coşkusuyla çarpan stadyumların gürültüsünden, insanın kendi içindeki o en sessiz, en derin odacığa giden yolculuk. Modern dünyanın ritminde kaybettiklerimiz ve kalbimizde yeniden bulduklarımız...</span>
+                                <span class="lang-en">A journey from the noise of stadiums beating with the enthusiasm of crowds to the quietest, deepest chamber within one's self. What we lost in the rhythm of the modern world and what we find again in our hearts...</span>
                             </p>
-                            <a href="https://yeninesil.tv" target="_blank" rel="noopener" class="article-link">Yazının Devamı <i class="fas fa-arrow-right"></i></a>
+                            <a href="https://yeninesil.tv" target="_blank" rel="noopener" class="article-link">
+                                <span class="lang-tr">Yazının Devamı</span>
+                                <span class="lang-en">Read More</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
                         </div>
                     </article>
 
                     <!-- Article 2 -->
                     <article class="article-card">
                         <div class="article-content">
-                            <span class="article-date"><i class="far fa-calendar-alt"></i> 20 Mayıs 2026</span>
-                            <h3 class="article-title">Yıldız Tozundan Çelik Kapılara...</h3>
+                            <span class="article-date"><i class="far fa-calendar-alt"></i> <span class="lang-tr">20 Mayıs 2026</span><span class="lang-en">May 20, 2026</span></span>
+                            <h3 class="article-title">
+                                <span class="lang-tr">Yıldız Tozundan Çelik Kapılara...</span>
+                                <span class="lang-en">From Stardust to Steel Doors...</span>
+                            </h3>
                             <p class="article-excerpt">
-                                Evrenin kozmik kökenlerinden, kendi ellerimizle ördüğümüz güvenlik duvarlarına, bizi koruyan ama aynı zamanda sınırlayan çelik kapılara uzanan felsefi bir bakış açısı. İnsanın sınırları aşma çabası ve sığınak arayışı.
+                                <span class="lang-tr">Evrenin kozmik kökenlerinden, kendi ellerimizle ördüğümüz güvenlik duvarlarına, bizi koruyan ama aynı zamanda sınırlayan çelik kapılara uzanan felsefi bir bakış açısı. İnsanın sınırları aşma çabası ve sığınak arayışı.</span>
+                                <span class="lang-en">A philosophical perspective extending from the cosmic origins of the universe to the security walls we build with our own hands, the steel doors that protect us but also limit us. Man's effort to transcend limits and search for shelter.</span>
                             </p>
-                            <a href="https://yeninesil.tv" target="_blank" rel="noopener" class="article-link">Yazının Devamı <i class="fas fa-arrow-right"></i></a>
+                            <a href="https://yeninesil.tv" target="_blank" rel="noopener" class="article-link">
+                                <span class="lang-tr">Yazının Devamı</span>
+                                <span class="lang-en">Read More</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
                         </div>
                     </article>
 
                     <!-- Article 3 -->
                     <article class="article-card">
                         <div class="article-content">
-                            <span class="article-date"><i class="far fa-calendar-alt"></i> 9 Şubat 2026</span>
-                            <h3 class="article-title">Bu Hafta Bunlar Oldu...</h3>
+                            <span class="article-date"><i class="far fa-calendar-alt"></i> <span class="lang-tr">9 Şubat 2026</span><span class="lang-en">February 9, 2026</span></span>
+                            <h3 class="article-title">
+                                <span class="lang-tr">Bu Hafta Bunlar Oldu...</span>
+                                <span class="lang-en">What Happened This Week...</span>
+                            </h3>
                             <p class="article-excerpt">
-                                Dijital dünyanın hızla akan akışında gözden kaçanlar, haftanın öne çıkan gelişmeleri ve yeni nesil iletişim trendlerinin toplumsal yansımaları üzerine haftalık panoramik bir değerlendirme.
+                                <span class="lang-tr">Dijital dünyanın hızla akan akışında gözden kaçanlar, haftanın öne çıkan gelişmeleri ve yeni nesil iletişim trendlerinin toplumsal yansımaları üzerine haftalık panoramik bir değerlendirme.</span>
+                                <span class="lang-en">A weekly panoramic evaluation of things overlooked in the fast-flowing stream of the digital world, outstanding weekly developments, and the societal reflections of new generation communication trends.</span>
                             </p>
-                            <a href="https://yeninesil.tv" target="_blank" rel="noopener" class="article-link">Yazının Devamı <i class="fas fa-arrow-right"></i></a>
+                            <a href="https://yeninesil.tv" target="_blank" rel="noopener" class="article-link">
+                                <span class="lang-tr">Yazının Devamı</span>
+                                <span class="lang-en">Read More</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
                         </div>
                     </article>
                 </div>
@@ -289,7 +440,10 @@
             <div class="container">
                 <div class="section-header">
                     <span class="section-mono">// 04. EKOSİSTEM</span>
-                    <h2 class="section-title">Medya & Platformlar</h2>
+                    <h2 class="section-title">
+                        <span class="lang-tr">Medya & Platformlar</span>
+                        <span class="lang-en">Media & Platforms</span>
+                    </h2>
                 </div>
                 
                 <div class="platforms-grid">
@@ -297,66 +451,111 @@
                     <div class="platform-card twitter-personal">
                         <div class="platform-icon"><i class="fab fa-x-twitter"></i></div>
                         <h3 class="platform-name">Ahmet Rıfat Albuz (X)</h3>
-                        <p class="platform-desc">Gündem analizleri, anlık değerlendirmeler ve 85.000'i aşkın takipçiyle aktif etkileşim.</p>
+                        <p class="platform-desc">
+                            <span class="lang-tr">Gündem analizleri, anlık değerlendirmeler ve 85.000'i aşkın takipçiyle aktif etkileşim.</span>
+                            <span class="lang-en">Current affairs analysis, instant evaluations, and active interaction with over 85,000 followers.</span>
+                        </p>
                         <div class="platform-stats">
-                            <span class="stat-badge"><i class="fas fa-users"></i> 85.9K Takipçi</span>
+                            <span class="stat-badge"><i class="fas fa-users"></i> 85.9K <span class="lang-tr">Takipçi</span><span class="lang-en">Followers</span></span>
                         </div>
-                        <a href="https://x.com/AhmetRifatAlbuz" target="_blank" rel="noopener" class="platform-btn">Takip Et <i class="fas fa-external-link-alt"></i></a>
+                        <a href="https://x.com/AhmetRifatAlbuz" target="_blank" rel="noopener" class="platform-btn">
+                            <span class="lang-tr">Takip Et</span>
+                            <span class="lang-en">Follow</span>
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
                     </div>
 
                     <!-- Yeni Nesil TV Platform -->
                     <div class="platform-card yntv-web">
                         <div class="platform-icon"><i class="fas fa-globe"></i></div>
                         <h3 class="platform-name">yeninesil.tv</h3>
-                        <p class="platform-desc">Yeni nesil yayıncılık anlayışıyla kurulan ve yönetilen bağımsız dijital medya portalı.</p>
+                        <p class="platform-desc">
+                            <span class="lang-tr">Yeni nesil yayıncılık anlayışıyla kurulan ve yönetilen bağımsız dijital medya portalı.</span>
+                            <span class="lang-en">Independent digital media portal founded and managed with a new generation broadcasting approach.</span>
+                        </p>
                         <div class="platform-stats">
                             <span class="stat-badge"><i class="fas fa-mouse-pointer"></i> yeninesil.tv</span>
                         </div>
-                        <a href="https://yeninesil.tv" target="_blank" rel="noopener" class="platform-btn">Ziyaret Et <i class="fas fa-external-link-alt"></i></a>
+                        <a href="https://yeninesil.tv" target="_blank" rel="noopener" class="platform-btn">
+                            <span class="lang-tr">Ziyaret Et</span>
+                            <span class="lang-en">Visit</span>
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
                     </div>
 
                     <!-- Yeni Nesil TV YouTube -->
                     <div class="platform-card yntv-youtube">
                         <div class="platform-icon"><i class="fab fa-youtube"></i></div>
                         <h3 class="platform-name">Yeni Nesil TV (YouTube)</h3>
-                        <p class="platform-desc">Gündem, teknoloji, spor ve kültür-sanat odaklı video içerikler, özel yayınlar ve röportajlar.</p>
+                        <p class="platform-desc">
+                            <span class="lang-tr">Gündem, teknoloji, spor ve kültür-sanat odaklı video içerikler, özel yayınlar ve röportajlar.</span>
+                            <span class="lang-en">Video content, special broadcasts, and interviews focusing on current affairs, technology, sports, and culture-arts.</span>
+                        </p>
                         <div class="platform-stats">
                             <span class="stat-badge"><i class="fas fa-play-circle"></i> @YeniNesilTV</span>
                         </div>
-                        <a href="https://www.youtube.com/@YeniNesilTV" target="_blank" rel="noopener" class="platform-btn">Abone Ol <i class="fas fa-external-link-alt"></i></a>
+                        <a href="https://www.youtube.com/@YeniNesilTV" target="_blank" rel="noopener" class="platform-btn">
+                            <span class="lang-tr">Abone Ol</span>
+                            <span class="lang-en">Subscribe</span>
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
                     </div>
 
                     <!-- Yeni Nesil TV Twitter -->
                     <div class="platform-card yntv-twitter">
                         <div class="platform-icon"><i class="fab fa-x-twitter"></i></div>
                         <h3 class="platform-name">Yeni Nesil TV (X)</h3>
-                        <p class="platform-desc">Haber akışı, dijital yayın duyuruları ve sosyal medyada anlık gündem paylaşımları.</p>
+                        <p class="platform-desc">
+                            <span class="lang-tr">Haber akışı, dijital yayın duyuruları ve sosyal medyada anlık gündem paylaşımları.</span>
+                            <span class="lang-en">News feed, digital broadcast announcements, and instant current affairs shares on social media.</span>
+                        </p>
                         <div class="platform-stats">
-                            <span class="stat-badge"><i class="fas fa-users"></i> 32.9K Takipçi</span>
+                            <span class="stat-badge"><i class="fas fa-users"></i> 32.9K <span class="lang-tr">Takipçi</span><span class="lang-en">Followers</span></span>
                         </div>
-                        <a href="https://x.com/yeninesiltv" target="_blank" rel="noopener" class="platform-btn">Takip Et <i class="fas fa-external-link-alt"></i></a>
+                        <a href="https://x.com/yeninesiltv" target="_blank" rel="noopener" class="platform-btn">
+                            <span class="lang-tr">Takip Et</span>
+                            <span class="lang-en">Follow</span>
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
                     </div>
 
                     <!-- Yeni Nesil TV Instagram -->
                     <div class="platform-card yntv-instagram">
                         <div class="platform-icon"><i class="fab fa-instagram"></i></div>
                         <h3 class="platform-name">Yeni Nesil TV (Instagram)</h3>
-                        <p class="platform-desc">Görsel odaklı haber kartları, video kesitleri ve platform içi etkileşimli paylaşımlar.</p>
+                        <p class="platform-desc">
+                            <span class="lang-tr">Görsel odaklı haber kartları, video kesitleri ve platform içi etkileşimli paylaşımlar.</span>
+                            <span class="lang-en">Image-focused news cards, video clips, and interactive posts on the platform.</span>
+                        </p>
                         <div class="platform-stats">
                             <span class="stat-badge"><i class="fas fa-camera"></i> @yeninesil.tv</span>
                         </div>
-                        <a href="https://www.instagram.com/yeninesil.tv" target="_blank" rel="noopener" class="platform-btn">Takip Et <i class="fas fa-external-link-alt"></i></a>
+                        <a href="https://www.instagram.com/yeninesil.tv" target="_blank" rel="noopener" class="platform-btn">
+                            <span class="lang-tr">Takip Et</span>
+                            <span class="lang-en">Follow</span>
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
                     </div>
 
                     <!-- Email Contact Card -->
                     <div class="platform-card contact-card">
                         <div class="platform-icon"><i class="far fa-envelope"></i></div>
-                        <h3 class="platform-name">İletişim & İş Birliği</h3>
-                        <p class="platform-desc">Proje ortaklıkları, basın danışmanlığı talepleri ve kurumsal iletişim çalışmaları için doğrudan e-posta.</p>
+                        <h3 class="platform-name">
+                            <span class="lang-tr">İletişim & İş Birliği</span>
+                            <span class="lang-en">Contact & Collaboration</span>
+                        </h3>
+                        <p class="platform-desc">
+                            <span class="lang-tr">Proje ortaklıkları, basın danışmanlığı talepleri ve kurumsal iletişim çalışmaları için doğrudan e-posta.</span>
+                            <span class="lang-en">Direct email for project partnerships, press advisory requests, and corporate communication efforts.</span>
+                        </p>
                         <div class="platform-stats">
                             <span class="stat-badge"><i class="fas fa-envelope-open-text"></i> ahmetrifatalbuz@gmail.com</span>
                         </div>
-                        <a href="mailto:ahmetrifatalbuz@gmail.com" class="platform-btn">E-posta Gönder <i class="fas fa-envelope"></i></a>
+                        <a href="mailto:ahmetrifatalbuz@gmail.com" class="platform-btn">
+                            <span class="lang-tr">E-posta Gönder</span>
+                            <span class="lang-en">Send Email</span>
+                            <i class="fas fa-envelope"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -367,35 +566,51 @@
             <div class="container">
                 <div class="section-header">
                     <span class="section-mono">// 05. BAĞLANTI</span>
-                    <h2 class="section-title">Bana Ulaşın</h2>
+                    <h2 class="section-title">
+                        <span class="lang-tr">Bana Ulaşın</span>
+                        <span class="lang-en">Contact Me</span>
+                    </h2>
                 </div>
                 
                 <div class="contact-grid">
                     <div class="contact-info">
-                        <h3>Bir Projeniz mi Var?</h3>
+                        <h3>
+                            <span class="lang-tr">Bir Projeniz mi Var?</span>
+                            <span class="lang-en">Have a Project?</span>
+                        </h3>
                         <p class="contact-text">
-                            Kurumsal iletişim danışmanlığı, video prodüksiyon, iş ortaklıkları ya da sadece merhaba demek için mesaj gönderebilirsiniz. En kısa sürede dönüş sağlayacağım.
+                            <span class="lang-tr">Kurumsal iletişim danışmanlığı, video prodüksiyon, iş ortaklıkları ya da sadece merhaba demek için mesaj gönderebilirsiniz. En kısa sürede dönüş sağlayacağım.</span>
+                            <span class="lang-en">You can send a message for corporate communication consulting, video production, partnerships, or just to say hello. I will get back to you as soon as possible.</span>
                         </p>
                         
                         <div class="info-list">
                             <div class="info-item">
                                 <div class="info-icon"><i class="fas fa-envelope"></i></div>
                                 <div class="info-content">
-                                    <span>E-posta</span>
+                                    <span>
+                                        <span class="lang-tr">E-posta</span>
+                                        <span class="lang-en">Email</span>
+                                    </span>
                                     <a href="mailto:ahmetrifatalbuz@gmail.com">ahmetrifatalbuz@gmail.com</a>
                                 </div>
                             </div>
                             <div class="info-item">
                                 <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
                                 <div class="info-content">
-                                    <span>Konum</span>
+                                    <span>
+                                        <span class="lang-tr">Konum</span>
+                                        <span class="lang-en">Location</span>
+                                    </span>
                                     <p>Ankara, Türkiye</p>
                                 </div>
                             </div>
                         </div>
 
                         <div class="social-links-wrap">
-                            <h4>Sosyal Medyada Ben</h4>
+                            <h4>
+                                <span class="lang-tr">Sosyal Medyada Ben</span>
+                                <span class="lang-en">Me on Social Media</span>
+                            </h4>
                             <div class="social-icons">
                                 <a href="https://x.com/AhmetRifatAlbuz" target="_blank" rel="noopener" aria-label="Twitter Personal"><i class="fab fa-x-twitter"></i></a>
                                 <a href="https://www.instagram.com/yeninesil.tv" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -408,22 +623,38 @@
                     <div class="contact-form-container">
                         <form id="contactForm" class="contact-form">
                             <div class="form-group">
-                                <label for="name">Adınız Soyadınız</label>
+                                <label for="name">
+                                    <span class="lang-tr">Adınız Soyadınız</span>
+                                    <span class="lang-en">Your Full Name</span>
+                                </label>
                                 <input type="text" id="name" name="name" required placeholder="Ahmet Yılmaz">
                             </div>
                             <div class="form-group">
-                                <label for="email">E-posta Adresiniz</label>
+                                <label for="email">
+                                    <span class="lang-tr">E-posta Adresiniz</span>
+                                    <span class="lang-en">Your Email Address</span>
+                                </label>
                                 <input type="email" id="email" name="email" required placeholder="ahmet@example.com">
                             </div>
                             <div class="form-group">
-                                <label for="subject">Konu</label>
+                                <label for="subject">
+                                    <span class="lang-tr">Konu</span>
+                                    <span class="lang-en">Subject</span>
+                                </label>
                                 <input type="text" id="subject" name="subject" required placeholder="İş Birliği Talebi">
                             </div>
                             <div class="form-group">
-                                <label for="message">Mesajınız</label>
+                                <label for="message">
+                                    <span class="lang-tr">Mesajınız</span>
+                                    <span class="lang-en">Your Message</span>
+                                </label>
                                 <textarea id="message" name="message" rows="5" required placeholder="Mesajınızı buraya yazın..."></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block" id="form-submit-btn">Gönder <i class="fas fa-paper-plane"></i></button>
+                            <button type="submit" class="btn btn-primary btn-block" id="form-submit-btn">
+                                <span class="lang-tr">Gönder</span>
+                                <span class="lang-en">Send</span>
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
                             <div id="formStatus" class="form-status"></div>
                         </form>
                     </div>
@@ -438,15 +669,33 @@
             <div class="footer-top">
                 <div class="footer-brand">
                     <span class="logo-text">ARA</span><span class="logo-dot">.</span>
-                    <p>Frekansların, sözcüklerin ve dijitalin kesişiminde.</p>
+                    <p>
+                        <span class="lang-tr">Frekansların, sözcüklerin ve dijitalin kesişiminde.</span>
+                        <span class="lang-en">At the intersection of frequencies, words, and digital.</span>
+                    </p>
                 </div>
                 <div class="footer-links">
                     <ul>
-                        <li><a href="#hakkinda">Hakkında</a></li>
-                        <li><a href="#kariyer">Kariyer</a></li>
-                        <li><a href="#yazilar">Yazılar</a></li>
-                        <li><a href="#platformlar">Platformlar</a></li>
-                        <li><a href="#iletisim">İletişim</a></li>
+                        <li><a href="#hakkinda">
+                            <span class="lang-tr">Hakkında</span>
+                            <span class="lang-en">About</span>
+                        </a></li>
+                        <li><a href="#kariyer">
+                            <span class="lang-tr">Kariyer</span>
+                            <span class="lang-en">Career</span>
+                        </a></li>
+                        <li><a href="#yazilar">
+                            <span class="lang-tr">Yazılar</span>
+                            <span class="lang-en">Articles</span>
+                        </a></li>
+                        <li><a href="#platformlar">
+                            <span class="lang-tr">Platformlar</span>
+                            <span class="lang-en">Platforms</span>
+                        </a></li>
+                        <li><a href="#iletisim">
+                            <span class="lang-tr">İletişim</span>
+                            <span class="lang-en">Contact</span>
+                        </a></li>
                     </ul>
                 </div>
             </div>
@@ -455,15 +704,19 @@
             <div class="surprise-note">
                 <div class="surprise-note-content">
                     <p class="note-text">
-                        "25 yıllık dostluğun, kardeşliğin ve ortak yürütülen yolların anısına... İyi ki varsın Ahmet."
+                        <span class="lang-tr">"25 yıllık dostluğun, kardeşliğin ve ortak yürütülen yolların anısına... İyi ki varsın Ahmet."</span>
+                        <span class="lang-en">"In memory of 25 years of friendship, brotherhood, and roads traveled together... Glad to have you, Ahmet."</span>
                     </p>
-                    <span class="note-signature">— Eski Bir Dosttan Hediye</span>
+                    <span class="note-signature">
+                        <span class="lang-tr">— Eski Bir Dosttan Hediye</span>
+                        <span class="lang-en">— A Gift from an Old Friend</span>
+                    </span>
                 </div>
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2026 Ahmet Rıfat Albuz. Tüm Hakları Saklıdır.</p>
-                <p class="design-credit">Designed with <i class="fas fa-heart text-accent"></i> for ARA</p>
+                <p>&copy; 2026 Ahmet Rıfat Albuz. <span class="lang-tr">Tüm Hakları Saklıdır.</span><span class="lang-en">All Rights Reserved.</span></p>
+                <p class="design-credit"><span class="lang-tr">Tasarım</span><span class="lang-en">Designed</span> with <i class="fas fa-heart text-accent"></i> for ARA</p>
             </div>
         </div>
     </footer>

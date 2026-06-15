@@ -1,6 +1,6 @@
 /**
  * AHMET RIFAT ALBUZ - PERSONAL WEBSITE JAVASCRIPT
- * Interactivity: Typewriter effect, Scroll Reveal, Sticky Navigation, Mobile Menu, Form feedback
+ * Interactivity: Language switching, Typewriter effect, Scroll Reveal, Sticky Navigation, Mobile Menu, Form feedback
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -62,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('active');
-                // Optional: Unobserve after revealing to prevent repeated triggers
                 observer.unobserve(entry.target);
             }
         });
@@ -70,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const revealOptions = {
         root: null,
-        threshold: 0.15, // Trigger when 15% of the element is visible
+        threshold: 0.15,
         rootMargin: '0px 0px -50px 0px'
     };
 
@@ -99,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const activeLinkObserver = new IntersectionObserver(activeLinkObserverCallback, {
         root: null,
-        threshold: 0.5, // Trigger when section is 50% in viewport
+        threshold: 0.5,
         rootMargin: '-80px 0px -40% 0px'
     });
     
@@ -108,16 +107,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // 5. TYPEWRITER EFFECT (HERO SUBTITLE)
     // ==========================================
+    let typewriterTimeout;
     const typewriterElement = document.querySelector('.typewriter-text');
     
-    if (typewriterElement) {
-        const words = JSON.parse(typewriterElement.getAttribute('data-words'));
+    const startTypewriter = (lang) => {
+        if (!typewriterElement) return;
+        
+        // Clear any running timeout
+        if (typewriterTimeout) {
+            clearTimeout(typewriterTimeout);
+        }
+        
+        const wordsAttr = lang === 'en' ? 'data-words-en' : 'data-words-tr';
+        const words = JSON.parse(typewriterElement.getAttribute(wordsAttr));
+        
         let wordIndex = 0;
         let charIndex = 0;
         let isDeleting = false;
         let txt = '';
         
         const type = () => {
+            if (wordIndex >= words.length) wordIndex = 0;
             const currentWord = words[wordIndex];
             
             if (isDeleting) {
@@ -133,25 +143,78 @@ document.addEventListener('DOMContentLoaded', () => {
             let typeSpeed = isDeleting ? 40 : 80;
             
             if (!isDeleting && charIndex === currentWord.length) {
-                // Wait at the end of the word
                 typeSpeed = 2000;
                 isDeleting = true;
             } else if (isDeleting && charIndex === 0) {
                 isDeleting = false;
-                // Move to next word
                 wordIndex = (wordIndex + 1) % words.length;
                 typeSpeed = 500;
             }
             
-            setTimeout(type, typeSpeed);
+            typewriterTimeout = setTimeout(type, typeSpeed);
         };
         
-        // Start the typewriter loop
-        setTimeout(type, 800);
-    }
+        type();
+    };
 
     // ==========================================
-    // 6. CONTACT FORM HANDLING & FEEDBACK
+    // 6. LANGUAGE SWITCHER LOGIC
+    // ==========================================
+    const langBtns = document.querySelectorAll('.lang-btn');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const subjectInput = document.getElementById('subject');
+    const messageInput = document.getElementById('message');
+
+    const updatePlaceholders = (lang) => {
+        if (!nameInput) return;
+        if (lang === 'en') {
+            nameInput.placeholder = 'John Doe';
+            emailInput.placeholder = 'john@example.com';
+            subjectInput.placeholder = 'Collaboration Request';
+            messageInput.placeholder = 'Write your message here...';
+        } else {
+            nameInput.placeholder = 'Ahmet Yılmaz';
+            emailInput.placeholder = 'ahmet@example.com';
+            subjectInput.placeholder = 'İş Birliği Talebi';
+            messageInput.placeholder = 'Mesajınızı buraya yazın...';
+        }
+    };
+
+    const setLanguage = (lang) => {
+        document.body.className = 'lang-' + lang;
+        localStorage.setItem('lang', lang);
+        
+        // Update switcher buttons UI
+        langBtns.forEach(btn => {
+            if (btn.getAttribute('data-lang') === lang) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        
+        // Update input placeholders
+        updatePlaceholders(lang);
+        
+        // Restart typewriter
+        startTypewriter(lang);
+    };
+
+    // Click handler for switcher buttons
+    langBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const lang = btn.getAttribute('data-lang');
+            setLanguage(lang);
+        });
+    });
+
+    // Initialize default or saved language
+    const savedLang = localStorage.getItem('lang') || 'tr';
+    setLanguage(savedLang);
+
+    // ==========================================
+    // 7. CONTACT FORM HANDLING & FEEDBACK
     // ==========================================
     const contactForm = document.getElementById('contactForm');
     const formStatus = document.getElementById('formStatus');
@@ -161,9 +224,13 @@ document.addEventListener('DOMContentLoaded', () => {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
+            const isEn = document.body.classList.contains('lang-en');
+            
             // Disable button during submission state
             formSubmitBtn.disabled = true;
-            formSubmitBtn.innerHTML = 'Gönderiliyor... <i class="fas fa-spinner fa-spin"></i>';
+            formSubmitBtn.innerHTML = isEn 
+                ? 'Sending... <i class="fas fa-spinner fa-spin"></i>'
+                : 'Gönderiliyor... <i class="fas fa-spinner fa-spin"></i>';
             
             // Simulate API request delay
             setTimeout(() => {
@@ -171,14 +238,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Reset status styling
                 formStatus.className = 'form-status success';
-                formStatus.innerHTML = `<i class="fas fa-check-circle"></i> Teşekkürler ${name}! Mesajınız başarıyla gönderildi.`;
+                formStatus.innerHTML = isEn
+                    ? `<i class="fas fa-check-circle"></i> Thank you ${name}! Your message has been sent successfully.`
+                    : `<i class="fas fa-check-circle"></i> Teşekkürler ${name}! Mesajınız başarıyla gönderildi.`;
                 
                 // Clear input fields
                 contactForm.reset();
                 
                 // Restore button state
                 formSubmitBtn.disabled = false;
-                formSubmitBtn.innerHTML = 'Gönder <i class="fas fa-paper-plane"></i>';
+                formSubmitBtn.innerHTML = isEn
+                    ? 'Send <i class="fas fa-paper-plane"></i>'
+                    : 'Gönder <i class="fas fa-paper-plane"></i>';
                 
                 // Fade out success message after 5 seconds
                 setTimeout(() => {
