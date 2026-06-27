@@ -774,6 +774,9 @@ img {
 .platform-card.kanal3-columnist::before {
     background-color: #FF6F00; /* Kanal 3 TV Orange */
 }
+.platform-card.eksisozluk::before {
+    background-color: #8ac43a; /* Ekşi Sözlük Green */
+}
 .platform-card.contact-card::before {
     background-color: var(--color-accent);
 }
@@ -799,6 +802,9 @@ img {
 }
 .kanal3-columnist .platform-icon {
     color: #FF6F00;
+}
+.eksisozluk .platform-icon {
+    color: #8ac43a;
 }
 .yntv-web .platform-icon {
     color: var(--color-secondary);
