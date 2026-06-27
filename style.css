@@ -1056,53 +1056,7 @@ img {
     color: var(--color-text);
 }
 
-/* Friendship Surprise Note - Highly Aesthetic Editorial Box */
-.surprise-note {
-    background: linear-gradient(135deg, rgba(22, 22, 22, 0.8) 0%, rgba(30, 30, 30, 0.8) 100%);
-    border: 1px solid rgba(201, 162, 39, 0.2); /* Subtle Gold border */
-    border-left: 3px solid var(--color-secondary); /* Solid Gold left line */
-    padding: 2.5rem;
-    border-radius: 6px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
 
-.surprise-note::after {
-    content: '"';
-    position: absolute;
-    right: 2rem;
-    bottom: -1rem;
-    font-family: var(--font-serif);
-    font-size: 8rem;
-    color: rgba(201, 162, 39, 0.05);
-    font-weight: 700;
-    line-height: 1;
-}
-
-.surprise-note-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-}
-
-.note-text {
-    font-family: var(--font-serif);
-    font-size: 1.25rem;
-    font-style: italic;
-    color: var(--color-text);
-    line-height: 1.6;
-    margin-bottom: 0.8rem;
-    letter-spacing: 0.2px;
-}
-
-.note-signature {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-    color: var(--color-secondary);
-    text-transform: uppercase;
-}
 
 .footer-bottom {
     display: flex;
