@@ -4,16 +4,28 @@ import assert from 'node:assert/strict';
 const BASE = process.env.SITE_BASE || 'https://ahmetrifatalbuz.com';
 const get = (p, init) => fetch(BASE + p, { redirect: 'manual', ...init });
 
-const home = await get('/');
+// The first request after a cold cache may fall back to static HTML (by design); warm up to 3 times.
+let home;
+let html;
+for (let i = 0; i < 3; i++) {
+  home = await get('/');
+  html = await home.text();
+  if (home.headers.get('x-ssr') === '1') break;
+  await new Promise((r) => setTimeout(r, 1500));
+}
 assert.equal(home.status, 200, 'home');
-const html = await home.text();
 assert.match(html, /id="kanallar"/, 'new layout live');
 assert.match(html, /yeninesil-logo-white\.png/, 'logo');
 assert.ok(home.headers.get('content-security-policy'), 'csp');
+assert.equal(home.headers.get('x-ssr'), '1', 'server-side rendered');
+assert.match(html, /<link rel="preload" as="image"/, 'LCP preload');
+assert.ok((html.match(/<article class="card/g) || []).length >= 10, 'cards in initial HTML');
 
 const enPage = await get('/en/');
 assert.equal(enPage.status, 200, '/en/');
-assert.match(await enPage.text(), /<html lang="en">/, 'en lang');
+assert.match(await enPage.text(), /<html lang="en"/, 'en lang');
+assert.match(html, /yeninesil-logo-black\.png/, 'header logo (light)');
+assert.match(html, /data-theme-set="dark"/, 'theme switch');
 
 for (const p of ['/kvkk','/robots.txt', '/sitemap.xml', '/assets/yeninesil-logo-white.png', '/style.css', '/script.js']) {
   const r = await get(p);

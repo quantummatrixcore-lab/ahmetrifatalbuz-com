@@ -129,6 +129,64 @@ export function validateContact(input, now = Date.now()) {
   return errors.length ? { ok: false, spam: false, errors } : { ok: true, data };
 }
 
+// ---- server-side rendering (HTML strings; every dynamic value is escaped) ----
+export function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
+export function formatDate(iso, lang = 'tr') {
+  const d = new Date(iso);
+  if (!iso || Number.isNaN(d.getTime())) return '';
+  return d.toLocaleDateString(lang === 'en' ? 'en-GB' : 'tr-TR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Istanbul' });
+}
+
+// Variants: 'card' (image top), 'feature' (big image top + excerpt), 'row' (thumb left), 'summary' (no image, source mark).
+export function renderCard(item, { cat = '', feature = false, variant, eager = false, lang = 'tr', byline = '', mark = '' } = {}) {
+  const href = safeHttpUrl(item?.link);
+  if (!href || !item.title) return '';
+  const v = variant || (feature ? 'feature' : 'card');
+  const img = v === 'summary' ? null : safeHttpUrl(item.image);
+  const markHtml = mark ? `<span class="card-mark">${escapeHtml(mark)}</span>` : '';
+  const media = img
+    ? `<div class="card-media"><img src="${escapeHtml(img)}" alt="" decoding="async" width="640" height="360"${v === 'feature' ? ' fetchpriority="high"' : ''}${eager ? '' : ' loading="lazy"'}>${v !== 'row' ? markHtml : ''}</div>`
+    : '';
+  const dateTxt = item.date ? `<time datetime="${escapeHtml(String(item.date).slice(0, 10))}">${escapeHtml(formatDate(item.date, lang))}</time>` : '';
+  const meta = byline || dateTxt ? `<p class="card-meta">${byline ? `<span>${escapeHtml(byline)}</span>` : ''}${byline && dateTxt ? '<span class="dot" aria-hidden="true"></span>' : ''}${dateTxt}</p>` : '';
+  const excerpt = v === 'feature' && item.excerpt ? `<p class="card-excerpt">${escapeHtml(item.excerpt)}</p>` : '';
+  const catHtml = cat || (v === 'summary' && mark) ? `<span class="card-cat">${v === 'summary' && mark ? markHtml : ''}${escapeHtml(cat)}</span>` : '';
+  return `<article class="card card--${v}"><a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${media}<div class="card-body">${catHtml}<h3 class="card-title">${escapeHtml(item.title)}</h3>${excerpt}${meta}</div></a></article>`;
+}
+
+export function renderGrid(items, { limit = 6, featureFirst = false, ...opts } = {}) {
+  return (Array.isArray(items) ? items : []).slice(0, limit).map((it, i) => renderCard(it, { ...opts, feature: featureFirst && i === 0 })).join('');
+}
+
+/** All dynamic regions of the home page, keyed by element id. Shared by SSR and the client fallback. */
+export function renderRegions(feed, lang = 'tr') {
+  const en = lang === 'en';
+  const columns = feed?.columns || [];
+  const videos = feed?.videos || [];
+  const byline = 'Ahmet Rıfat Albuz';
+  const colCat = en ? 'Columns' : 'Köşe Yazıları';
+  return {
+    'banner-main': renderCard(columns[0], { variant: 'feature', cat: colCat, byline, lang, eager: true }),
+    'banner-side': columns.slice(1, 4).map((c) => renderCard(c, { variant: 'row', cat: colCat, byline, lang, eager: true })).join(''),
+    'columns-more': columns.slice(4, 7).map((c) => renderCard(c, { variant: 'card', cat: colCat, byline, lang })).join(''),
+    'videos-main': videos.slice(0, 2).map((x) => renderCard(x, { variant: 'card', cat: 'Yeni Nesil TV', mark: 'YouTube', lang })).join(''),
+    'videos-side': videos.slice(2, 6).map((x) => renderCard(x, { variant: 'summary', cat: 'Yeni Nesil TV', mark: 'YouTube', lang })).join(''),
+    'guides-grid': renderGrid(feed?.guides, { limit: 6, variant: 'card', cat: 'Tüm Cezalar', lang }),
+    'nav-latest': renderLatest(columns, lang),
+  };
+}
+
+export function renderLatest(items, lang = 'tr') {
+  return (Array.isArray(items) ? items : []).slice(0, 3).map((it) => {
+    const href = safeHttpUrl(it?.link);
+    if (!href || !it.title) return '';
+    return `<li><a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer"><time datetime="${escapeHtml(String(it.date || '').slice(0, 10))}">${escapeHtml(formatDate(it.date, lang))}</time><span>${escapeHtml(it.title)}</span></a></li>`;
+  }).join('');
+}
+
 export async function verifyTurnstile(token, secret, ip, fetchImpl = fetch) {
   if (!secret) return { ok: true, skipped: true };
   if (typeof token !== 'string' || !token || token.length > 2048) return { ok: false, reason: 'missing' };

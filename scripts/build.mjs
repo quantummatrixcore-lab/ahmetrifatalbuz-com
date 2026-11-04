@@ -7,12 +7,14 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
 rmSync(dist, { recursive: true, force: true });
 mkdirSync(join(dist, 'en'), { recursive: true });
-for (const f of ['index.html', 'kvkk.html', 'style.css', 'script.js', 'robots.txt', 'sitemap.xml', '_headers']) cpSync(join(root, f), join(dist, f));
+for (const f of ['index.html', 'kvkk.html', 'style.css', 'script.js', 'theme.js', 'robots.txt', 'sitemap.xml', '_headers']) cpSync(join(root, f), join(dist, f));
+// Shared escaped renderers, imported by script.js for the no-SSR fallback.
+cpSync(join(root, 'workers/site-api/src/lib.js'), join(dist, 'lib.js'));
 cpSync(join(root, 'assets'), join(dist, 'assets'), { recursive: true });
 
 const tr = readFileSync(join(root, 'index.html'), 'utf8');
 const swaps = [
-  ['<html lang="tr">', '<html lang="en">'],
+  ['<html lang="tr" data-theme="light">', '<html lang="en" data-theme="light">'],
   ['<body class="lang-tr">', '<body class="lang-en" data-lang-default="en">'],
   ['<link rel="canonical" href="https://ahmetrifatalbuz.com/">', '<link rel="canonical" href="https://ahmetrifatalbuz.com/en/">'],
   ['<title>Ahmet Rıfat Albuz | Gazeteci, Köşe Yazarı, Yeni Nesil TV Kurucusu</title>', '<title>Ahmet Rıfat Albuz | Journalist, Columnist, Founder of Yeni Nesil TV</title>'],
@@ -22,6 +24,8 @@ const swaps = [
   ['data-lang="tr" data-href="/" aria-pressed="true"', 'data-lang="tr" data-href="/" aria-pressed="false"'],
   ['data-lang="en" data-href="/en/" aria-pressed="false"', 'data-lang="en" data-href="/en/" aria-pressed="true"'],
   ['<a class="skip-link" href="#icerik">İçeriğe geç</a>', '<a class="skip-link" href="#icerik">Skip to content</a>'],
+  ['<li class="nav-lang"><a href="/en/" hreflang="en" lang="en">English</a></li>', '<li class="nav-lang"><a href="/" hreflang="tr" lang="tr">Türkçe</a></li>'],
+  ['placeholder="Ara…"', 'placeholder="Search…"'],
 ];
 let en = tr;
 for (const [from, to] of swaps) {
@@ -34,7 +38,8 @@ const { createHash } = await import('node:crypto');
 const hash = (f) => createHash('sha256').update(readFileSync(join(root, f))).digest('hex').slice(0, 10);
 const bust = (s) => s
   .replace('href="/style.css"', `href="/style.css?v=${hash('style.css')}"`)
-  .replace('src="/script.js"', `src="/script.js?v=${hash('script.js')}"`);
+  .replace('src="/script.js"', `src="/script.js?v=${hash('script.js')}"`)
+  .replace('src="/theme.js"', `src="/theme.js?v=${hash('theme.js')}"`);
 writeFileSync(join(dist, 'index.html'), bust(readFileSync(join(dist, 'index.html'), 'utf8')));
 writeFileSync(join(dist, 'kvkk.html'), bust(readFileSync(join(dist, 'kvkk.html'), 'utf8')));
 writeFileSync(join(dist, 'en', 'index.html'), bust(en));

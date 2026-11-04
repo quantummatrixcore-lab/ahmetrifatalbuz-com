@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { stripHtml, truncate, withUtm, normalizeWpPost, normalizeWpList, parseYoutubeFeed, validateContact, buildMailText, verifyTurnstile, pickImage } from '../workers/site-api/src/lib.js';
+import { stripHtml, truncate, withUtm, normalizeWpPost, normalizeWpList, parseYoutubeFeed, validateContact, buildMailText, verifyTurnstile, pickImage, renderCard, renderGrid, renderLatest, formatDate, renderRegions } from '../workers/site-api/src/lib.js';
 
 test('stripHtml decodes entities and removes tags', () => {
   assert.equal(stripHtml('<p>Aile &#8220;Foto&#287;raf&#8221; &amp; Boş Yer</p>'), 'Aile “Fotoğraf” & Boş Yer');
@@ -96,6 +96,49 @@ test('verifyTurnstile: skipped without secret, rejects missing token, honors sit
   assert.deepEqual(await verifyTurnstile('tok', 's', null, badFetch), { ok: false, reason: 'invalid-input-response' });
   const downFetch = async () => { throw new Error('net'); };
   assert.equal((await verifyTurnstile('tok', 's', null, downFetch)).reason, 'unreachable');
+});
+
+test('renderCard escapes everything and rejects unsafe links', () => {
+  const html = renderCard({ link: 'https://a.tv/x?a=1&b=2', title: '<script>alert(1)</script>', image: 'javascript:x', date: '2026-10-30T17:07:05', excerpt: '"q"' }, { cat: 'A&B', feature: true, eager: true });
+  assert.doesNotMatch(html, /<script>/);
+  assert.match(html, /&lt;script&gt;/);
+  assert.match(html, /href="https:\/\/a\.tv\/x\?a=1&amp;b=2"/);
+  assert.doesNotMatch(html, /javascript:/);
+  assert.match(html, /A&amp;B/);
+  assert.match(html, /card--feature/);
+  assert.match(html, /&quot;q&quot;/);
+  assert.equal(renderCard({ link: 'javascript:alert(1)', title: 'x' }), '');
+});
+
+test('renderGrid marks first as feature with fetchpriority; others lazy unless eager', () => {
+  const items = [1, 2, 3].map((n) => ({ link: `https://a.tv/${n}`, title: `T${n}`, image: `https://a.tv/${n}.jpg` }));
+  const g = renderGrid(items, { featureFirst: true, limit: 2 });
+  assert.equal((g.match(/<article/g) || []).length, 2);
+  assert.match(g, /card--feature.*fetchpriority="high"/);
+  assert.equal((g.match(/loading="lazy"/g) || []).length, 2);
+  assert.equal((renderGrid(items, { eager: true }).match(/loading="lazy"/g) || []).length, 0);
+});
+
+test('formatDate localizes in Istanbul time', () => {
+  assert.equal(formatDate('2026-10-30T17:07:05', 'tr'), '30 Ekim 2026');
+  assert.equal(formatDate('2026-10-30T17:07:05', 'en'), '30 October 2026');
+  assert.equal(formatDate('nope'), '');
+  assert.match(renderLatest([{ link: 'https://a.tv/1', title: 'X', date: '2026-10-30' }]), /<li><a href="https:\/\/a\.tv\/1"/);
+});
+
+test('renderRegions fills every page region with the right variants', () => {
+  const col = (n) => ({ link: `https://yeninesil.tv/${n}`, title: `C${n}`, image: `https://yeninesil.tv/${n}.jpg`, date: '2026-10-30' });
+  const vid = (n) => ({ link: `https://www.youtube.com/watch?v=${n}`, title: `V${n}`, image: `https://i.ytimg.com/vi/${n}/hqdefault.jpg`, date: '2026-10-08' });
+  const r = renderRegions({ columns: [1, 2, 3, 4, 5].map(col), videos: [1, 2, 3, 4, 5, 6].map(vid), guides: [col(9)] }, 'tr');
+  assert.match(r['banner-main'], /card--feature/);
+  assert.equal((r['banner-side'].match(/card--row/g) || []).length, 3);
+  assert.match(r['banner-side'], /Ahmet Rıfat Albuz/);
+  assert.equal((r['videos-main'].match(/<article/g) || []).length, 2);
+  assert.equal((r['videos-side'].match(/card--summary/g) || []).length, 4);
+  assert.doesNotMatch(r['videos-side'], /<img/);
+  assert.match(r['guides-grid'], /Tüm Cezalar/);
+  assert.match(r['nav-latest'], /<li>/);
+  assert.match(renderRegions({ columns: [col(1)] }, 'en')['banner-main'], /Columns/);
 });
 
 test('buildMailText contains fields', () => {

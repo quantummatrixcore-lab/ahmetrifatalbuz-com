@@ -34,13 +34,14 @@ test('every target=_blank link has noopener noreferrer', () => {
 test('single h1 and Yeni Nesil logo in channels block', () => {
   assert.equal((html.match(/<h1[\s>]/g) || []).length, 1);
   const channels = html.slice(html.indexOf('id="kanallar"'), html.indexOf('id="rehberler"'));
-  assert.match(channels, /src="\/assets\/yeninesil-logo-white\.png" alt="Yeni Nesil TV"/);
+  assert.match(channels, /class="chnl-avatar chnl-avatar--logo"><img src="\/assets\/yeninesil-logo-white\.png"/);
+  assert.match(channels, /<h3 class="chnl-name">Yeni Nesil TV<\/h3>/);
   assert.ok(existsSync(join(root, 'assets/yeninesil-logo-white.png')));
 });
 
 test('no third-party scripts or icon CDNs', () => {
   const scripts = html.match(/<script[^>]*src="[^"]+"/g) || [];
-  for (const s of scripts) assert.match(s, /src="(\/script\.js|https:\/\/challenges\.cloudflare\.com\/turnstile\/v0\/api\.js)"/);
+  for (const s of scripts) assert.match(s, /src="\/(script|theme)\.js"/);
   assert.match(html, /class="cf-turnstile" data-sitekey="0x/);
   assert.match(read('_headers'), /frame-src https:\/\/challenges\.cloudflare\.com/);
   assert.doesNotMatch(html, /font-awesome|\bfa[srb]? fa-|\bfa-[a-z]/);
@@ -73,7 +74,9 @@ test('build generates English page with hreflang and canonical', async () => {
   const { execFileSync } = await import('node:child_process');
   execFileSync(process.execPath, [join(root, 'scripts/build.mjs')], { stdio: 'pipe' });
   const en = read('dist/en/index.html');
-  assert.match(en, /<html lang="en">/);
+  assert.match(en, /<html lang="en" data-theme="light">/);
+  assert.match(en, /<li class="nav-lang"><a href="\/" hreflang="tr" lang="tr">Türkçe<\/a><\/li>/);
+  assert.ok(existsSync(join(root, 'dist/lib.js')) && existsSync(join(root, 'dist/theme.js')));
   assert.match(en, /<link rel="canonical" href="https:\/\/ahmetrifatalbuz\.com\/en\/">/);
   assert.match(en, /data-lang-default="en"/);
   assert.match(en, /hreflang="tr"/);
@@ -84,6 +87,26 @@ test('build generates English page with hreflang and canonical', async () => {
     assert.match(read(f), /href="\/style\.css\?v=[0-9a-f]{10}"/, f);
   }
   assert.ok(!existsSync(join(root, 'dist/docs')));
+});
+
+test('header: Yeni Nesil logo top-left in light+dark variants, 3-way theme switch, search', () => {
+  const header = html.slice(html.indexOf('<header'), html.indexOf('</header>'));
+  const firstLink = header.slice(header.indexOf('<a href="/" class="hdr-logo">'), header.indexOf('</a>', header.indexOf('class="hdr-logo"')));
+  assert.match(firstLink, /class="logo-light" src="\/assets\/yeninesil-logo-black\.png"/);
+  assert.match(firstLink, /class="logo-dark" src="\/assets\/yeninesil-logo-white\.png"/);
+  assert.ok(existsSync(join(root, 'assets/yeninesil-logo-black.png')));
+  for (const m of ['system', 'light', 'dark']) assert.match(header, new RegExp(`data-theme-set="${m}"`));
+  assert.match(header, /class="hdr-search"/);
+  assert.match(html, /<script src="\/theme\.js"><\/script>/, 'theme applied before paint');
+  const css = read('style.css');
+  assert.match(css, /\[data-theme="dark"\] \{/);
+  assert.match(css, /\[data-theme="dark"\] \.logo-dark \{ display: block; \}/);
+});
+
+test('news-portal layout regions exist in order', () => {
+  const order = ['id="banner-main"', 'id="banner-side"', 'id="videos-main"', 'id="videos-side"', 'id="kanallar"', 'id="guides-grid"', 'id="hakkimda"', 'id="iletisim"'];
+  let last = -1;
+  for (const o of order) { const i = html.indexOf(o); assert.ok(i > last, o); last = i; }
 });
 
 test('robots, sitemap, headers exist', () => {
