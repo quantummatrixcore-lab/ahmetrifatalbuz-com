@@ -91,7 +91,8 @@ test('build generates English page with hreflang and canonical', async () => {
 
 test('header: Yeni Nesil logo top-left in light+dark variants, 3-way theme switch, search', () => {
   const header = html.slice(html.indexOf('<header'), html.indexOf('</header>'));
-  const firstLink = header.slice(header.indexOf('<a href="/" class="hdr-logo">'), header.indexOf('</a>', header.indexOf('class="hdr-logo"')));
+  assert.match(header, /<a href="\/" class="hdr-logo" aria-label="[^"]+">/, 'logo link has a name in both themes');
+  const firstLink = header.slice(header.indexOf('<a href="/" class="hdr-logo"'), header.indexOf('</a>', header.indexOf('class="hdr-logo"')));
   assert.match(firstLink, /class="logo-light" src="\/assets\/yeninesil-logo-black\.png"/);
   assert.match(firstLink, /class="logo-dark" src="\/assets\/yeninesil-logo-white\.png"/);
   assert.ok(existsSync(join(root, 'assets/yeninesil-logo-black.png')));
