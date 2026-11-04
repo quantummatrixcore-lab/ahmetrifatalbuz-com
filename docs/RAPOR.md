@@ -207,3 +207,17 @@ node tests/live-site.mjs
 - **Kod ve altyapı tarafı:** benim kapatabileceğim maddeler bitti.
 - **Toplam: yaklaşık 830/1000.**
 - **Kalan ~170 puan:** yukarıdaki 8 maddeye bağlı; her biri hesap, ödeme, şifre ya da gerçek bilgi gerektiriyor.
+
+---
+
+## 9. Güncelleme 4 — 5 Kasım 2026
+
+| Yapılan | Kanıt |
+|---|---|
+| Tekrarlanan yazar portresi (`ahmetrifatalbuz.jpg`, `ara.jpg`) kartlardan kaldırıldı; yerine aynı boyutta, Yeni Nesil logolu kapak | canlıda portreli kart 0, kapak 5 |
+| Tüm kart görselleri aynı 16:9 oranda; büyük kart 1100px görsel kullanıyor | 7/7 kutu oranı 1.78 |
+| Ana sayfa (`/`, `/en/`) Worker tarafından KV snapshot'tan render ediliyor; ilk ziyaretçide de tam içerik var | `x-ssr-feed: worker-kv`, 190–350 ms |
+| Olay: Worker kendi alanına istek atınca döngüye girdi, ana sayfa yaklaşık 2 dakika 500 verdi. Route geri alındı, kaynak `ahmet-rifat-albuz.pages.dev` yapıldı, sorun çözüldü | canlı test geçti |
+| Testler | 34/34 + canlı test |
+
+**Güncel puan: yaklaşık 840/1000.** Kalan maddelerin hepsi kod dışı ve Patron/Ahmet Bey aksiyonu bekliyor (bkz. 8. bölüm).
