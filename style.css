@@ -181,7 +181,7 @@ body.lang-tr .lang-en, body.lang-en .lang-tr { display: none !important; }
 .field--check label { font-weight: 400; font-size: .85rem; color: var(--ink-2); }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 11px 18px; border-radius: 10px; font: 600 .92rem var(--font); text-decoration: none; cursor: pointer; border: 1px solid transparent; }
-.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary { background: #c00d16; color: #ffffff; } /* fixed dark red: >= 4.5:1 with white in both themes */
 .btn-primary:hover { filter: brightness(.92); }
 .btn-primary[disabled] { opacity: .6; cursor: progress; }
 .form-status { margin: 0; min-height: 1.5em; font-size: .92rem; }
