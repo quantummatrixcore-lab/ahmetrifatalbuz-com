@@ -1,267 +1,183 @@
-/**
- * AHMET RIFAT ALBUZ - PERSONAL WEBSITE JAVASCRIPT
- * Interactivity: Language switching, Typewriter effect, Scroll Reveal, Sticky Navigation, Mobile Menu, Form feedback
- */
+'use strict';
+(() => {
+    const $ = (s, r = document) => r.querySelector(s);
+    const store = {
+        get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+        set(k, v) { try { localStorage.setItem(k, v); } catch { /* storage unavailable */ } },
+    };
 
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // ==========================================
-    // 1. MOBILE NAVIGATION TOGGLE
-    // ==========================================
-    const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
-    const navMenu = document.querySelector('.nav-menu');
-    const navLinks = document.querySelectorAll('.nav-link');
+    // ---- language ----
+    const LANGS = ['tr', 'en'];
+    const setLang = (lang) => {
+        if (!LANGS.includes(lang)) lang = 'tr';
+        document.body.classList.remove('lang-tr', 'lang-en');
+        document.body.classList.add(`lang-${lang}`);
+        document.documentElement.lang = lang;
+        document.querySelectorAll('.lang-btn').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
+        store.set('arn-lang', lang);
+    };
+    setLang(store.get('arn-lang') || 'tr');
+    document.querySelectorAll('.lang-btn').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.lang)));
+    const isEn = () => document.body.classList.contains('lang-en');
 
-    if (mobileNavToggle && navMenu) {
-        mobileNavToggle.addEventListener('click', () => {
-            mobileNavToggle.classList.toggle('active');
-            navMenu.classList.toggle('active');
-            
-            // Prevent body scroll when menu is open
-            if (navMenu.classList.contains('active')) {
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = '';
-            }
+    // ---- mobile nav ----
+    const nav = $('#main-nav');
+    const toggle = $('.nav-toggle');
+    if (nav && toggle) {
+        const close = () => { nav.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); };
+        toggle.addEventListener('click', () => {
+            const open = nav.classList.toggle('open');
+            toggle.setAttribute('aria-expanded', String(open));
         });
+        nav.addEventListener('click', (e) => { if (e.target.closest('a')) close(); });
+        window.addEventListener('resize', () => { if (window.innerWidth > 860) close(); }, { passive: true });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
     }
 
-    // Close menu when a link is clicked
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            if (mobileNavToggle && navMenu) {
-                mobileNavToggle.classList.remove('active');
-                navMenu.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        });
-    });
+    // ---- live feed ----
+    const fmtDate = (iso) => {
+        const d = new Date(iso);
+        if (Number.isNaN(d.getTime())) return '';
+        return d.toLocaleDateString(isEn() ? 'en-GB' : 'tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+    };
+    const el = (tag, cls, text) => {
+        const n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (text != null) n.textContent = text;
+        return n;
+    };
+    const safeUrl = (u) => { try { const x = new URL(u); return /^https?:$/.test(x.protocol) ? x.href : null; } catch { return null; } };
 
-    // ==========================================
-    // 2. STICKY HEADER & SCROLL STATE
-    // ==========================================
-    const header = document.querySelector('.main-header');
-    
-    const handleScroll = () => {
-        if (window.scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
+    const card = (item, { cat, feature = false } = {}) => {
+        const href = safeUrl(item.link);
+        if (!href) return null;
+        const art = el('article', feature ? 'card card--feature' : 'card');
+        const a = el('a');
+        a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer';
+        const img = safeUrl(item.image);
+        if (img) {
+            const m = el('div', 'card-media');
+            const i = el('img');
+            i.src = img; i.alt = ''; i.loading = 'lazy'; i.decoding = 'async'; i.width = 640; i.height = 360;
+            m.append(i); a.append(m);
         }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Run on load to set initial state
-
-    // ==========================================
-    // 3. SCROLL REVEAL (INTERSECTION OBSERVER)
-    // ==========================================
-    const revealElements = document.querySelectorAll('.scroll-reveal');
-    
-    const revealCallback = (entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-                observer.unobserve(entry.target);
-            }
-        });
-    };
-
-    const revealOptions = {
-        root: null,
-        threshold: 0.15,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const revealObserver = new IntersectionObserver(revealCallback, revealOptions);
-    revealElements.forEach(el => revealObserver.observe(el));
-
-    // ==========================================
-    // 4. ACTIVE NAV LINK HIGHLIGHT ON SCROLL
-    // ==========================================
-    const sections = document.querySelectorAll('section[id]');
-    
-    const activeLinkObserverCallback = (entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const id = entry.target.getAttribute('id');
-                navLinks.forEach(link => {
-                    if (link.getAttribute('href') === `#${id}`) {
-                        link.classList.add('active');
-                    } else {
-                        link.classList.remove('active');
-                    }
-                });
-            }
-        });
-    };
-
-    const activeLinkObserver = new IntersectionObserver(activeLinkObserverCallback, {
-        root: null,
-        threshold: 0.5,
-        rootMargin: '-80px 0px -40% 0px'
-    });
-    
-    sections.forEach(sec => activeLinkObserver.observe(sec));
-
-    // ==========================================
-    // 5. TYPEWRITER EFFECT (HERO SUBTITLE)
-    // ==========================================
-    let typewriterTimeout;
-    const typewriterElement = document.querySelector('.typewriter-text');
-    
-    const startTypewriter = (lang) => {
-        if (!typewriterElement) return;
-        
-        // Clear any running timeout
-        if (typewriterTimeout) {
-            clearTimeout(typewriterTimeout);
+        const body = el('div', 'card-body');
+        if (cat) body.append(el('span', 'card-cat', cat));
+        body.append(el('h3', 'card-title', item.title));
+        if (item.excerpt && feature) body.append(el('p', 'card-excerpt', item.excerpt));
+        if (item.date) {
+            const t = el('time', 'card-date', fmtDate(item.date));
+            t.dateTime = item.date.slice(0, 10);
+            body.append(t);
         }
-        
-        const wordsAttr = lang === 'en' ? 'data-words-en' : 'data-words-tr';
-        const words = JSON.parse(typewriterElement.getAttribute(wordsAttr));
-        
-        let wordIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
-        let txt = '';
-        
-        const type = () => {
-            if (wordIndex >= words.length) wordIndex = 0;
-            const currentWord = words[wordIndex];
-            
-            if (isDeleting) {
-                txt = currentWord.substring(0, charIndex - 1);
-                charIndex--;
-            } else {
-                txt = currentWord.substring(0, charIndex + 1);
-                charIndex++;
-            }
-            
-            typewriterElement.textContent = txt;
-            
-            let typeSpeed = isDeleting ? 40 : 80;
-            
-            if (!isDeleting && charIndex === currentWord.length) {
-                typeSpeed = 2000;
-                isDeleting = true;
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                wordIndex = (wordIndex + 1) % words.length;
-                typeSpeed = 500;
-            }
-            
-            typewriterTimeout = setTimeout(type, typeSpeed);
+        a.append(body); art.append(a);
+        return art;
+    };
+
+    const fill = (id, items, opts) => {
+        const box = document.getElementById(id);
+        if (!box || !items?.length) return;
+        const nodes = items.map((it, i) => card(it, { ...opts, feature: opts.featureFirst && i === 0 })).filter(Boolean);
+        if (nodes.length) box.replaceChildren(...nodes);
+    };
+
+    const fillLatest = (items) => {
+        const ol = $('#latest-list');
+        if (!ol || !items?.length) return;
+        const lis = items.slice(0, 3).map((it) => {
+            const href = safeUrl(it.link);
+            if (!href) return null;
+            const li = el('li');
+            const a = el('a');
+            a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer';
+            const t = el('time', null, fmtDate(it.date));
+            t.dateTime = (it.date || '').slice(0, 10);
+            a.append(t, el('span', null, it.title));
+            li.append(a);
+            return li;
+        }).filter(Boolean);
+        if (lis.length) ol.replaceChildren(...lis);
+    };
+
+    let feed = null;
+    const render = () => {
+        if (!feed) return;
+        fillLatest(feed.columns);
+        fill('columns-grid', (feed.columns || []).slice(0, 4), { cat: 'Yeni Nesil TV', featureFirst: true });
+        fill('videos-grid', (feed.videos || []).slice(0, 6), { cat: 'YouTube' });
+        fill('guides-grid', (feed.guides || []).slice(0, 6), { cat: 'Tüm Cezalar' });
+    };
+    fetch('/api/feed', { headers: { accept: 'application/json' } })
+        .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+        .then((data) => { feed = data; render(); })
+        .catch(() => { /* static fallback content stays in place */ });
+    document.querySelectorAll('.lang-btn').forEach((b) => b.addEventListener('click', render));
+
+    // ---- active nav on scroll (rAF throttled) ----
+    const links = [...document.querySelectorAll('.main-nav a[href^="#"]')];
+    const sections = links.map((a) => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    let ticking = false;
+    const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+            const y = window.scrollY + 120;
+            let current = null;
+            for (const s of sections) if (s.offsetTop <= y) current = s.id;
+            links.forEach((a) => a.classList.toggle('active', a.getAttribute('href') === `#${current}`));
+            ticking = false;
+        });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // ---- contact form ----
+    const form = $('#contact-form');
+    if (form) {
+        const status = $('#cf-status');
+        const submit = $('#cf-submit');
+        const started = $('#cf-started');
+        if (started) started.value = String(Date.now());
+        const msg = {
+            sending: ['Gönderiliyor…', 'Sending…'],
+            ok: ['Teşekkürler, mesajınız iletildi. En kısa sürede dönüş yapılacak.', 'Thank you, your message has been delivered.'],
+            validation: ['Lütfen işaretli alanları kontrol edin.', 'Please check the highlighted fields.'],
+            rate_limited: ['Çok fazla deneme yapıldı. Lütfen bir saat sonra tekrar deneyin.', 'Too many attempts. Please try again in an hour.'],
+            error: ['Mesaj gönderilemedi. Lütfen ahmetrifatalbuz@gmail.com adresine e-posta gönderin.', 'Could not send. Please email ahmetrifatalbuz@gmail.com.'],
         };
-        
-        type();
-    };
+        const say = (key, cls) => { status.textContent = msg[key][isEn() ? 1 : 0]; status.className = `form-status ${cls || ''}`; };
+        const fieldMap = { name: 'cf-name', email: 'cf-email', subject: 'cf-subject', message: 'cf-message', consent: 'cf-consent' };
 
-    // ==========================================
-    // 6. LANGUAGE SWITCHER LOGIC
-    // ==========================================
-    const langBtns = document.querySelectorAll('.lang-btn');
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const subjectInput = document.getElementById('subject');
-    const messageInput = document.getElementById('message');
-
-    const updatePlaceholders = (lang) => {
-        if (!nameInput) return;
-        if (lang === 'en') {
-            nameInput.placeholder = 'John Doe';
-            emailInput.placeholder = 'john@example.com';
-            subjectInput.placeholder = 'Collaboration Request';
-            messageInput.placeholder = 'Write your message here...';
-        } else {
-            nameInput.placeholder = 'Ahmet Yılmaz';
-            emailInput.placeholder = 'ahmet@example.com';
-            subjectInput.placeholder = 'İş Birliği Talebi';
-            messageInput.placeholder = 'Mesajınızı buraya yazın...';
-        }
-    };
-
-    const setLanguage = (lang) => {
-        document.body.className = 'lang-' + lang;
-        localStorage.setItem('lang', lang);
-        
-        // Update switcher buttons UI
-        langBtns.forEach(btn => {
-            if (btn.getAttribute('data-lang') === lang) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            form.querySelectorAll('[aria-invalid]').forEach((n) => n.removeAttribute('aria-invalid'));
+            if (!form.checkValidity()) {
+                form.querySelectorAll(':invalid').forEach((n) => n.setAttribute('aria-invalid', 'true'));
+                say('validation', 'err');
+                form.querySelector(':invalid')?.focus();
+                return;
+            }
+            const data = Object.fromEntries(new FormData(form).entries());
+            data.consent = $('#cf-consent').checked;
+            submit.disabled = true;
+            say('sending');
+            try {
+                const r = await fetch('/api/contact', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) });
+                const j = await r.json().catch(() => ({}));
+                if (r.ok && j.ok) {
+                    say('ok', 'ok');
+                    form.reset();
+                    if (started) started.value = String(Date.now());
+                } else if (j.error === 'validation') {
+                    (j.fields || []).forEach((f) => document.getElementById(fieldMap[f])?.setAttribute('aria-invalid', 'true'));
+                    say('validation', 'err');
+                } else {
+                    say(j.error === 'rate_limited' ? 'rate_limited' : 'error', 'err');
+                }
+            } catch {
+                say('error', 'err');
+            } finally {
+                submit.disabled = false;
             }
         });
-        
-        // Update input placeholders
-        updatePlaceholders(lang);
-        
-        // Restart typewriter
-        startTypewriter(lang);
-    };
-
-    // Click handler for switcher buttons
-    langBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const lang = btn.getAttribute('data-lang');
-            setLanguage(lang);
-        });
-    });
-
-    // Initialize default or saved language
-    const savedLang = localStorage.getItem('lang') || 'tr';
-    setLanguage(savedLang);
-
-    // ==========================================
-    // 7. CONTACT FORM HANDLING & FEEDBACK
-    // ==========================================
-    const contactForm = document.getElementById('contactForm');
-    const formStatus = document.getElementById('formStatus');
-    const formSubmitBtn = document.getElementById('form-submit-btn');
-
-    if (contactForm && formStatus) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const isEn = document.body.classList.contains('lang-en');
-            
-            // Disable button during submission state
-            formSubmitBtn.disabled = true;
-            formSubmitBtn.innerHTML = isEn 
-                ? 'Sending... <i class="fas fa-spinner fa-spin"></i>'
-                : 'Gönderiliyor... <i class="fas fa-spinner fa-spin"></i>';
-            
-            // Simulate API request delay
-            setTimeout(() => {
-                const name = document.getElementById('name').value;
-                
-                // Reset status styling
-                formStatus.className = 'form-status success';
-                formStatus.innerHTML = isEn
-                    ? `<i class="fas fa-check-circle"></i> Thank you ${name}! Your message has been sent successfully.`
-                    : `<i class="fas fa-check-circle"></i> Teşekkürler ${name}! Mesajınız başarıyla gönderildi.`;
-                
-                // Clear input fields
-                contactForm.reset();
-                
-                // Restore button state
-                formSubmitBtn.disabled = false;
-                formSubmitBtn.innerHTML = isEn
-                    ? 'Send <i class="fas fa-paper-plane"></i>'
-                    : 'Gönder <i class="fas fa-paper-plane"></i>';
-                
-                // Fade out success message after 5 seconds
-                setTimeout(() => {
-                    formStatus.style.transition = 'opacity 1s ease';
-                    formStatus.style.opacity = '0';
-                    setTimeout(() => {
-                        formStatus.innerHTML = '';
-                        formStatus.style.opacity = '1';
-                    }, 1000);
-                }, 5000);
-                
-            }, 1500);
-        });
     }
-});
+})();
