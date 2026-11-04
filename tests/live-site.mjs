@@ -18,7 +18,11 @@ assert.match(html, /id="kanallar"/, 'new layout live');
 assert.match(html, /yeninesil-logo-white\.png/, 'logo');
 assert.ok(home.headers.get('content-security-policy'), 'csp');
 assert.equal(home.headers.get('x-ssr'), '1', 'server-side rendered');
-assert.match(html, /<link rel="preload" as="image"/, 'LCP preload');
+assert.equal(home.headers.get('x-ssr-feed'), 'worker-kv', 'home rendered by Worker from KV snapshot');
+assert.doesNotMatch(html, /<div class="card-media"><img src="[^"]*(ahmetrifatalbuz|\/ara)-?/, 'no author portrait as article image');
+const bannerMain = html.slice(html.indexOf('id="banner-main"'), html.indexOf('id="banner-side"'));
+if (/card-media--cover/.test(bannerMain)) assert.doesNotMatch(html, /<link rel="preload" as="image"/, 'no preload for cover');
+else assert.match(html, /<link rel="preload" as="image"/, 'LCP preload for real image');
 assert.ok((html.match(/<article class="card/g) || []).length >= 10, 'cards in initial HTML');
 
 const enPage = await get('/en/');

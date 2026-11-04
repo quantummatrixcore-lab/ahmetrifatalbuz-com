@@ -37,7 +37,7 @@ export async function buildFeed() {
   };
 }
 
-const SNAPSHOT_KEY = 'feed:latest';
+const SNAPSHOT_KEY = 'feed:v2'; // bump when normalization rules change
 const SNAPSHOT_MAX_AGE_MS = 3 * 3600 * 1000;
 
 /** Rebuilds the feed and stores it in KV. A failed source keeps its previous items (no empty sections). */
@@ -120,9 +120,37 @@ async function handleContact(request, env) {
   return json({ ok: true, delivered });
 }
 
+const HOME_PATHS = new Map([['/', 'tr'], ['/en/', 'en']]);
+const PAGES_ORIGIN = 'https://ahmet-rifat-albuz.pages.dev';
+
+async function getSnapshot(env, ctx) {
+  const snap = env.INBOX ? await env.INBOX.get(SNAPSHOT_KEY, 'json').catch(() => null) : null;
+  if (snap?.columns?.length) {
+    if (Date.now() - Date.parse(snap.updated) > SNAPSHOT_MAX_AGE_MS) ctx.waitUntil(refreshSnapshot(env).catch(() => {}));
+    return snap;
+  }
+  return refreshSnapshot(env);
+}
+
+/** Home pages: fetch the static page from Pages (origin) and render the feed from the KV snapshot. */
+async function handleHome(request, env, ctx, lang) {
+  // Fetch the static page from the Pages origin host (not our own zone route -> no self-loop).
+  const u = new URL(request.url);
+  const headers = new Headers({ accept: 'text/html', 'x-arn-worker': '1', 'user-agent': request.headers.get('user-agent') || 'arn-site-api' });
+  const [res, feed] = await Promise.all([
+    fetch(new URL(u.pathname, PAGES_ORIGIN), { headers, redirect: 'manual' }),
+    getSnapshot(env, ctx).catch(() => null),
+  ]);
+  if (!res.ok || !feed) return res;
+  const { applySsr } = await import('./ssr.js');
+  return applySsr(res, feed, lang, 'worker-kv');
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    const lang = HOME_PATHS.get(url.pathname);
+    if (lang && request.method === 'GET') return handleHome(request, env, ctx, lang);
     if (url.pathname === '/api/feed' && request.method === 'GET') return handleFeed(request, env, ctx);
     if (url.pathname === '/api/contact' && request.method === 'POST') return handleContact(request, env);
     if (url.pathname === '/api/health') return json({ ok: true, email: Boolean(env.EMAIL), inbox: Boolean(env.INBOX), turnstile: Boolean(env.TURNSTILE_SECRET) });

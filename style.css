@@ -98,7 +98,9 @@ body.lang-tr .lang-en, body.lang-en .lang-tr { display: none !important; }
 .card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
 .card > a { text-decoration: none; display: flex; flex-direction: column; height: 100%; }
 .card-media { position: relative; aspect-ratio: 16 / 9; background: var(--bg-alt); overflow: hidden; }
-.card-media img { width: 100%; height: 100%; object-fit: cover; }
+.card-media img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
+.card-media--cover { display: grid; place-items: center; background: linear-gradient(135deg, #141414 0%, #2a2a2a 55%, #4a0b10 100%); }
+.card-media--cover img { width: 46%; max-width: 220px; height: auto; object-fit: contain; opacity: .9; }
 .card-mark { position: absolute; left: 10px; bottom: 10px; background: #c00d16; color: var(--accent-ink); font: 700 .68rem var(--font); letter-spacing: .04em; padding: 3px 8px; border-radius: 6px; }
 .card-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
 .card-cat { display: flex; align-items: center; gap: 8px; font: 700 .72rem var(--font); letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
@@ -111,7 +113,8 @@ body.lang-tr .lang-en, body.lang-en .lang-tr { display: none !important; }
 .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--ink-3); display: inline-block; }
 .card--feature .card-title { font-size: 1.6rem; }
 .card--row > a { flex-direction: row; }
-.card--row .card-media { flex: 0 0 42%; aspect-ratio: 4 / 3; }
+.card--row .card-media { flex: 0 0 42%; aspect-ratio: 16 / 9; align-self: center; }
+.card--row .card-media--cover img { width: 62%; }
 .card--row .card-title { font-size: 1rem; }
 .card--row .card-body { min-width: 0; padding: 12px 14px; }
 @media (max-width: 600px) { .card--row .card-media { flex-basis: 38%; } .card--row .card-title { font-size: .95rem; } }
@@ -136,7 +139,7 @@ body.lang-tr .lang-en, body.lang-en .lang-tr { display: none !important; }
 .chnl-avatar { width: 56px; height: 56px; border-radius: 50%; flex: none; display: grid; place-items: center; background: #111; color: #fff; font: 700 1rem var(--font); overflow: hidden; }
 .chnl-avatar--logo { background: #111; padding: 6px; }
 .chnl-avatar--logo img { width: 100%; height: auto; }
-.chnl-avatar--photo { object-fit: cover; }
+.chnl-avatar--accent { background: #c00d16; letter-spacing: .04em; font-size: .9rem; }
 .chnl-name { font-size: 1.1rem; margin: 0; }
 .chnl-sub { margin: 0; color: var(--ink-3); font-size: .85rem; }
 .chnl-list { list-style: none; margin: 0; padding: 0; }

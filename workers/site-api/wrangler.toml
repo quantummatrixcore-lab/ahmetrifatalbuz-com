@@ -5,7 +5,9 @@ workers_dev = false
 
 routes = [
   { pattern = "ahmetrifatalbuz.com/api/*", zone_name = "ahmetrifatalbuz.com" },
-  { pattern = "www.ahmetrifatalbuz.com/api/*", zone_name = "ahmetrifatalbuz.com" }
+  { pattern = "www.ahmetrifatalbuz.com/api/*", zone_name = "ahmetrifatalbuz.com" },
+  { pattern = "ahmetrifatalbuz.com/", zone_name = "ahmetrifatalbuz.com" },
+  { pattern = "ahmetrifatalbuz.com/en/", zone_name = "ahmetrifatalbuz.com" }
 ]
 
 [triggers]

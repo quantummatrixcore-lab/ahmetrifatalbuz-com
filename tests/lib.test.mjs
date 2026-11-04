@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { stripHtml, truncate, withUtm, normalizeWpPost, normalizeWpList, parseYoutubeFeed, validateContact, buildMailText, verifyTurnstile, pickImage, renderCard, renderGrid, renderLatest, formatDate, renderRegions } from '../workers/site-api/src/lib.js';
+import { stripHtml, truncate, withUtm, normalizeWpPost, normalizeWpList, parseYoutubeFeed, validateContact, buildMailText, verifyTurnstile, pickImage, renderCard, renderGrid, renderLatest, formatDate, renderRegions, dropGenericImages } from '../workers/site-api/src/lib.js';
 
 test('stripHtml decodes entities and removes tags', () => {
   assert.equal(stripHtml('<p>Aile &#8220;Foto&#287;raf&#8221; &amp; Boş Yer</p>'), 'Aile “Fotoğraf” & Boş Yer');
@@ -139,6 +139,25 @@ test('renderRegions fills every page region with the right variants', () => {
   assert.match(r['guides-grid'], /Tüm Cezalar/);
   assert.match(r['nav-latest'], /<li>/);
   assert.match(renderRegions({ columns: [col(1)] }, 'en')['banner-main'], /Columns/);
+});
+
+test('author portrait and repeated images are dropped; cards get a same-size branded cover', () => {
+  const items = dropGenericImages([
+    { title: 'a', link: 'https://y.tv/a', image: 'https://y.tv/wp-content/uploads/2026/01/ahmetrifatalbuz-400x225.jpg' },
+    { title: 'b', link: 'https://y.tv/b', image: 'https://y.tv/wp-content/uploads/2026/06/ara-400x225.jpg' },
+    { title: 'c', link: 'https://y.tv/c', image: 'https://y.tv/up/same-400x225.webp' },
+    { title: 'd', link: 'https://y.tv/d', image: 'https://y.tv/up/same-800x450.webp' },
+    { title: 'e', link: 'https://y.tv/e', image: 'https://y.tv/up/unique-400x225.webp' },
+  ]);
+  assert.deepEqual(items.map((i) => Boolean(i.image)), [false, false, false, false, true]);
+  const cover = renderCard(items[0], { variant: 'row' });
+  assert.match(cover, /card-media card-media--cover/);
+  assert.equal(pickImage({ source_url: 'https://y.tv/wp-content/uploads/2026/01/ahmetrifatalbuz.jpg' }), null);
+});
+
+test('feature card prefers the large rendition', () => {
+  const html = renderCard({ title: 't', link: 'https://y.tv/t', image: 'https://y.tv/s.jpg', imageLarge: 'https://y.tv/l.jpg' }, { variant: 'feature' });
+  assert.match(html, /src="https:\/\/y\.tv\/l\.jpg"/);
 });
 
 test('buildMailText contains fields', () => {

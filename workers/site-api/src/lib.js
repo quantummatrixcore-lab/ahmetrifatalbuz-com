@@ -54,6 +54,7 @@ export function safeHttpUrl(url) {
 
 // Smallest WordPress rendition that is still >= minWidth px wide (card images), else the original.
 export function pickImage(media, minWidth = 400) {
+  if (media?.source_url && AUTHOR_IMAGE_RE.test(String(media.source_url))) return null;
   if (!media) return null;
   const sizes = Object.values(media.media_details?.sizes || {})
     .filter((s) => s && Number(s.width) >= minWidth && safeHttpUrl(s.source_url))
@@ -66,19 +67,37 @@ export function normalizeWpPost(post) {
   const link = withUtm(post.link);
   const title = stripHtml(post.title?.rendered);
   if (!link || !title) return null;
-  const image = pickImage(post._embedded?.['wp:featuredmedia']?.[0]);
+  const media = post._embedded?.['wp:featuredmedia']?.[0];
+  const image = pickImage(media);
+  const imageLarge = pickImage(media, 800);
   return {
     title,
     link,
     date: typeof post.date === 'string' ? post.date : null,
     excerpt: truncate(stripHtml(post.excerpt?.rendered), 180),
     image,
+    imageLarge,
   };
+}
+
+// Author portrait that WordPress uses as a default featured image; never show it as an article image.
+const AUTHOR_IMAGE_RE = /\/(ahmetrifatalbuz|ara)(-\d+x\d+)?\.(jpe?g|png|webp)$/i;
+const imageBase = (u) => String(u || '').replace(/-\d+x\d+(?=\.\w+$)/, '');
+
+/** Drops author-portrait and repeated (generic) images so cards fall back to a branded cover. */
+export function dropGenericImages(items) {
+  const count = new Map();
+  for (const it of items) if (it.image) count.set(imageBase(it.image), (count.get(imageBase(it.image)) || 0) + 1);
+  return items.map((it) => {
+    if (!it.image) return it;
+    const generic = AUTHOR_IMAGE_RE.test(new URL(it.image).pathname) || count.get(imageBase(it.image)) > 1;
+    return generic ? { ...it, image: null, imageLarge: null } : it;
+  });
 }
 
 export function normalizeWpList(list, limit = 6) {
   if (!Array.isArray(list)) return [];
-  return list.map(normalizeWpPost).filter(Boolean).slice(0, limit);
+  return dropGenericImages(list.map(normalizeWpPost).filter(Boolean)).slice(0, limit);
 }
 
 function tag(block, name) {
@@ -145,11 +164,14 @@ export function renderCard(item, { cat = '', feature = false, variant, eager = f
   const href = safeHttpUrl(item?.link);
   if (!href || !item.title) return '';
   const v = variant || (feature ? 'feature' : 'card');
-  const img = v === 'summary' ? null : safeHttpUrl(item.image);
+  const img = v === 'summary' ? null : safeHttpUrl((v === 'feature' && item.imageLarge) || item.image);
   const markHtml = mark ? `<span class="card-mark">${escapeHtml(mark)}</span>` : '';
-  const media = img
-    ? `<div class="card-media"><img src="${escapeHtml(img)}" alt="" decoding="async" width="640" height="360"${v === 'feature' ? ' fetchpriority="high"' : ''}${eager ? '' : ' loading="lazy"'}>${v !== 'row' ? markHtml : ''}</div>`
-    : '';
+  // Every image card gets the same 16:9 box; without a real photo it shows a branded cover instead.
+  const media = v === 'summary'
+    ? ''
+    : img
+      ? `<div class="card-media"><img src="${escapeHtml(img)}" alt="" decoding="async" width="640" height="360"${v === 'feature' ? ' fetchpriority="high"' : ''}${eager ? '' : ' loading="lazy"'}>${v !== 'row' ? markHtml : ''}</div>`
+      : `<div class="card-media card-media--cover" aria-hidden="true"><img src="/assets/yeninesil-logo-white.png" alt="" width="180" height="45" loading="lazy"></div>`;
   const dateTxt = item.date ? `<time datetime="${escapeHtml(String(item.date).slice(0, 10))}">${escapeHtml(formatDate(item.date, lang))}</time>` : '';
   const meta = byline || dateTxt ? `<p class="card-meta">${byline ? `<span>${escapeHtml(byline)}</span>` : ''}${byline && dateTxt ? '<span class="dot" aria-hidden="true"></span>' : ''}${dateTxt}</p>` : '';
   const excerpt = v === 'feature' && item.excerpt ? `<p class="card-excerpt">${escapeHtml(item.excerpt)}</p>` : '';
