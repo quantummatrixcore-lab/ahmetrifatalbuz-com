@@ -52,13 +52,21 @@ export function safeHttpUrl(url) {
   }
 }
 
+// Smallest WordPress rendition that is still >= minWidth px wide (card images), else the original.
+export function pickImage(media, minWidth = 400) {
+  if (!media) return null;
+  const sizes = Object.values(media.media_details?.sizes || {})
+    .filter((s) => s && Number(s.width) >= minWidth && safeHttpUrl(s.source_url))
+    .sort((a, b) => Number(a.width) - Number(b.width));
+  return safeHttpUrl(sizes[0]?.source_url || media.source_url) || null;
+}
+
 export function normalizeWpPost(post) {
   if (!post || typeof post !== 'object') return null;
   const link = withUtm(post.link);
   const title = stripHtml(post.title?.rendered);
   if (!link || !title) return null;
-  const media = post._embedded?.['wp:featuredmedia']?.[0];
-  const image = safeHttpUrl(media?.media_details?.sizes?.medium_large?.source_url || media?.source_url) || null;
+  const image = pickImage(post._embedded?.['wp:featuredmedia']?.[0]);
   return {
     title,
     link,
@@ -119,6 +127,20 @@ export function validateContact(input, now = Date.now()) {
   if (!data.consent) errors.push('consent');
   if (/[\n]/.test(data.name) || /[\n]/.test(data.subject) || /[\n]/.test(data.email)) errors.push('header_injection');
   return errors.length ? { ok: false, spam: false, errors } : { ok: true, data };
+}
+
+export async function verifyTurnstile(token, secret, ip, fetchImpl = fetch) {
+  if (!secret) return { ok: true, skipped: true };
+  if (typeof token !== 'string' || !token || token.length > 2048) return { ok: false, reason: 'missing' };
+  try {
+    const body = new URLSearchParams({ secret, response: token });
+    if (ip) body.set('remoteip', ip);
+    const r = await fetchImpl('https://challenges.cloudflare.com/turnstile/v0/siteverify', { method: 'POST', body });
+    const j = await r.json();
+    return j && j.success === true ? { ok: true } : { ok: false, reason: (j && j['error-codes'] || []).join(',') || 'failed' };
+  } catch {
+    return { ok: false, reason: 'unreachable' };
+  }
 }
 
 export function buildMailText(d, meta = {}) {

@@ -138,3 +138,47 @@ powershell -ExecutionPolicy Bypass -File scripts/inbox.ps1 -Last 20
 node --test tests/lib.test.mjs tests/site.test.mjs
 node tests/live-site.mjs
 ```
+
+---
+
+## 7. Güncelleme 2 — 4 Kasım 2026 (otomatik tamamlananlar)
+
+| Yapılan | Kanıt |
+|---|---|
+| Turnstile widget (`0x4AAAAAAFz0L848typVU9Uc`) + Worker'da siteverify | `/api/health` → `turnstile:true`; token'sız form → 403 |
+| Turnstile sadece form kullanılınca yükleniyor (1.8 MB tasarruf) | sayfa ağırlığı 2.7 MB → ~470 KB |
+| `/en/` sayfası, hreflang tr/en/x-default, EN canonical, sitemap'e eklendi | `dist/en/index.html`, canlı `/en/` 200 |
+| WP görselleri için en küçük uygun boyut (`pickImage`) | birim testi |
+| CSS/JS içerik hash'i ile önbellek kırma (`?v=`) | canlı `script.js?v=…` |
+| GitHub Actions CI: test + build + her gün canlı kontrol | `.github/workflows/ci.yml` |
+| PHP eklentisi sözdizimi kontrolü (php-parser, PHP 8) | `PHP PARSE OK` |
+| Testler | 23/23 birim testi + canlı site testi geçti |
+
+**Lighthouse (mobil, canlı):** TR → Erişilebilirlik 100 · En İyi Uygulamalar 100 · SEO 100 · Performans 75–97 (ölçümler arasında değişiyor). EN → 100 · 100 · 100 · 76–85.
+
+### Güncel puan
+| # | Alt başlık | Max | Önceki | Şimdi |
+|---|---|---:|---:|---:|
+| 1 | Altyapı & hosting | 100 | 85 | 88 |
+| 2 | Performans | 100 | 80 | 85 |
+| 3 | SEO & yapısal veri | 120 | 100 | 115 |
+| 4 | Erişilebilirlik | 80 | 65 | 78 |
+| 5 | Güvenlik & KVKK | 120 | 100 | 110 |
+| 6 | İletişim formu | 80 | 50 | 55 |
+| 7 | İçerik tazeliği & doğruluk | 120 | 85 | 85 |
+| 8 | Tasarım / UX / mobil | 100 | 85 | 85 |
+| 9 | Ağ trafiği | 100 | 45 | 45 |
+| 10 | Ölçüm & analitik | 50 | 30 | 30 |
+| 11 | Operasyon & test | 30 | 22 | 27 |
+| | **TOPLAM** | **1000** | **747** | **803** |
+
+### Kalan 197 puan — sadece Patron/Ahmet Bey yapabilir
+1. Workers Paid + `wrangler email sending enable ahmetrifatalbuz.com` → Gmail teslimi (+25)
+2. WP eklentisini iki siteye yükleme (+45)
+3. İçerik doğrulama listesi 5.3 (+35)
+4. Search Console 3 site + sitemap (+20)
+5. DMARC kaydı `p=none` (DNS düzenleme yetkili token gerekiyor) (+10)
+6. Vercel artık projesini silme (+5)
+7. Pages'i GitHub'a bağlama veya CI'ya `CLOUDFLARE_API_TOKEN` secret ekleme (otomatik yayın) (+10)
+8. Performans: köşe yazılarını sunucu tarafında HTML'e gömme (LCP'yi API beklemesinden kurtarır) (+15) — sonraki teknik adım
+9. Yeni Nesil'de yazılara özgün öne çıkan görsel, takipçi sayılarının otomatik güncellenmesi (+32)

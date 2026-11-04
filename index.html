@@ -8,6 +8,9 @@
     <meta name="author" content="Ahmet Rıfat Albuz">
     <meta name="theme-color" content="#0f172a">
     <link rel="canonical" href="https://ahmetrifatalbuz.com/">
+    <link rel="alternate" hreflang="tr" href="https://ahmetrifatalbuz.com/">
+    <link rel="alternate" hreflang="en" href="https://ahmetrifatalbuz.com/en/">
+    <link rel="alternate" hreflang="x-default" href="https://ahmetrifatalbuz.com/">
     <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/assets/ahmet-rifat-albuz.jpg">
 
@@ -28,7 +31,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+    <link rel="preconnect" href="https://yeninesil.tv">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Serif+4:wght@600;700&display=swap">
     <link rel="stylesheet" href="/style.css">
 
     <script type="application/ld+json">
@@ -74,7 +78,7 @@
 
     <header class="site-header" id="top">
         <div class="container header-inner">
-            <a href="/" class="brand" aria-label="Ahmet Rıfat Albuz ana sayfa">
+            <a href="/" class="brand">
                 <span class="brand-name">Ahmet Rıfat Albuz</span>
                 <span class="brand-role"><span class="lang-tr">Gazeteci · Köşe Yazarı</span><span class="lang-en">Journalist · Columnist</span></span>
             </a>
@@ -90,8 +94,8 @@
             </nav>
             <div class="header-tools">
                 <div class="lang-switch" role="group" aria-label="Dil seçimi">
-                    <button type="button" class="lang-btn" data-lang="tr" aria-pressed="true">TR</button>
-                    <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+                    <button type="button" class="lang-btn" data-lang="tr" data-href="/" aria-pressed="true">TR</button>
+                    <button type="button" class="lang-btn" data-lang="en" data-href="/en/" aria-pressed="false">EN</button>
                 </div>
                 <button type="button" class="nav-toggle" aria-controls="main-nav" aria-expanded="false" aria-label="Menüyü aç">
                     <span></span><span></span><span></span>
@@ -298,6 +302,7 @@
                     <div class="hp" aria-hidden="true"><label for="cf-website">Website</label><input id="cf-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
                     <input type="hidden" name="started" id="cf-started" value="">
                     <div class="field field--check"><input id="cf-consent" name="consent" type="checkbox" required><label for="cf-consent"><span class="lang-tr"><a href="/kvkk">KVKK Aydınlatma Metni</a>'ni okudum; bilgilerimin yalnızca bu mesaja yanıt verilmesi amacıyla işlenmesini kabul ediyorum.</span><span class="lang-en">I have read the <a href="/kvkk">privacy notice</a> and agree that my data is processed only to reply to this message.</span></label></div>
+                    <div class="cf-turnstile" data-sitekey="0x4AAAAAAFz0L848typVU9Uc" data-language="auto" data-size="flexible"></div>
                     <button type="submit" class="btn btn-primary" id="cf-submit"><span class="lang-tr">Gönder</span><span class="lang-en">Send</span></button>
                     <p class="form-status" id="cf-status" role="status" aria-live="polite"></p>
                 </form>
@@ -338,6 +343,5 @@
         </div>
     </footer>
 
-    <script src="/script.js" defer></script>
-</body>
+    <script src="/script.js" defer></script></body>
 </html>

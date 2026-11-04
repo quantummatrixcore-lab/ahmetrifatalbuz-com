@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 'redesign/**']
+  pull_request:
+  schedule:
+    - cron: '0 6 * * *' # daily live check of production at 09:00 TR
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Unit + site tests
+        run: node --test tests/lib.test.mjs tests/site.test.mjs
+      - name: Build
+        run: node scripts/build.mjs
+      - name: Live production smoke check
+        if: github.event_name == 'schedule' || github.ref == 'refs/heads/main'
+        run: node tests/live-site.mjs

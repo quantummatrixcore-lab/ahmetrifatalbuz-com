@@ -8,11 +8,8 @@ Set-Location $root
 node --test tests/lib.test.mjs tests/site.test.mjs
 if ($LASTEXITCODE -ne 0) { throw 'Tests failed, deploy aborted.' }
 
-$dist = Join-Path $root 'dist'
-if (Test-Path $dist) { Remove-Item -Recurse -Force $dist }
-New-Item -ItemType Directory $dist | Out-Null
-Copy-Item index.html, kvkk.html, style.css, script.js, robots.txt, sitemap.xml, _headers $dist
-Copy-Item assets $dist -Recurse
+node scripts/build.mjs
+if ($LASTEXITCODE -ne 0) { throw 'Build failed.' }
 
 Push-Location workers/site-api
 wrangler deploy

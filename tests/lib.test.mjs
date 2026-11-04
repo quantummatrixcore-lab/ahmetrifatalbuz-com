@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { stripHtml, truncate, withUtm, normalizeWpPost, normalizeWpList, parseYoutubeFeed, validateContact, buildMailText } from '../workers/site-api/src/lib.js';
+import { stripHtml, truncate, withUtm, normalizeWpPost, normalizeWpList, parseYoutubeFeed, validateContact, buildMailText, verifyTurnstile, pickImage } from '../workers/site-api/src/lib.js';
 
 test('stripHtml decodes entities and removes tags', () => {
   assert.equal(stripHtml('<p>Aile &#8220;Foto&#287;raf&#8221; &amp; Boş Yer</p>'), 'Aile “Fotoğraf” & Boş Yer');
@@ -31,6 +31,18 @@ test('normalizeWpPost maps REST post', () => {
   assert.equal(p.excerpt, 'Kısa özet…');
   assert.equal(p.image, 'https://yeninesil.tv/wp-content/uploads/a.jpg');
   assert.match(p.link, /utm_campaign=arn/);
+});
+
+test('pickImage chooses smallest rendition >= 400px', () => {
+  const media = { source_url: 'https://a.tv/full.jpg', media_details: { sizes: {
+    thumbnail: { width: 160, source_url: 'https://a.tv/160.jpg' },
+    mobil: { width: 540, source_url: 'https://a.tv/540.jpg' },
+    boyut: { width: 400, source_url: 'https://a.tv/400.jpg' },
+    full: { width: 1280, source_url: 'https://a.tv/full.jpg' },
+  } } };
+  assert.equal(pickImage(media), 'https://a.tv/400.jpg');
+  assert.equal(pickImage({ source_url: 'https://a.tv/only.jpg' }), 'https://a.tv/only.jpg');
+  assert.equal(pickImage(null), null);
 });
 
 test('normalizeWpList drops invalid entries and limits', () => {
@@ -70,6 +82,20 @@ test('validateContact reports field errors', () => {
 test('validateContact blocks header injection', () => {
   const r = validateContact({ ...good, subject: 'Hi\nBcc: x@y.com' }, 10_000);
   assert.ok(r.errors.includes('header_injection'));
+});
+
+test('verifyTurnstile: skipped without secret, rejects missing token, honors siteverify', async () => {
+  assert.deepEqual(await verifyTurnstile('', undefined), { ok: true, skipped: true });
+  assert.equal((await verifyTurnstile('', 's')).ok, false);
+  let sent;
+  const okFetch = async (url, init) => { sent = init.body.toString(); return { json: async () => ({ success: true }) }; };
+  assert.equal((await verifyTurnstile('tok', 's', '1.2.3.4', okFetch)).ok, true);
+  assert.match(sent, /secret=s/);
+  assert.match(sent, /remoteip=1\.2\.3\.4/);
+  const badFetch = async () => ({ json: async () => ({ success: false, 'error-codes': ['invalid-input-response'] }) });
+  assert.deepEqual(await verifyTurnstile('tok', 's', null, badFetch), { ok: false, reason: 'invalid-input-response' });
+  const downFetch = async () => { throw new Error('net'); };
+  assert.equal((await verifyTurnstile('tok', 's', null, downFetch)).reason, 'unreachable');
 });
 
 test('buildMailText contains fields', () => {

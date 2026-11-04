@@ -16,8 +16,14 @@
         document.querySelectorAll('.lang-btn').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
         store.set('arn-lang', lang);
     };
-    setLang(store.get('arn-lang') || 'tr');
-    document.querySelectorAll('.lang-btn').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.lang)));
+    // Each language has its own URL (/ and /en/); the page's own language wins over stored preference.
+    setLang(document.body.dataset.langDefault || 'tr');
+    document.querySelectorAll('.lang-btn').forEach((b) => b.addEventListener('click', () => {
+        store.set('arn-lang', b.dataset.lang);
+        const target = b.dataset.href;
+        if (target && location.pathname !== target && /^https?:$/.test(location.protocol)) location.assign(target + location.hash);
+        else setLang(b.dataset.lang);
+    }));
     const isEn = () => document.body.classList.contains('lang-en');
 
     // ---- mobile nav ----
@@ -48,7 +54,7 @@
     };
     const safeUrl = (u) => { try { const x = new URL(u); return /^https?:$/.test(x.protocol) ? x.href : null; } catch { return null; } };
 
-    const card = (item, { cat, feature = false } = {}) => {
+    const card = (item, { cat, feature = false, eager = false } = {}) => {
         const href = safeUrl(item.link);
         if (!href) return null;
         const art = el('article', feature ? 'card card--feature' : 'card');
@@ -58,7 +64,9 @@
         if (img) {
             const m = el('div', 'card-media');
             const i = el('img');
-            i.src = img; i.alt = ''; i.loading = 'lazy'; i.decoding = 'async'; i.width = 640; i.height = 360;
+            i.src = img; i.alt = ''; i.decoding = 'async'; i.width = 640; i.height = 360;
+            if (feature) i.fetchPriority = 'high';
+            if (!eager) i.loading = 'lazy';
             m.append(i); a.append(m);
         }
         const body = el('div', 'card-body');
@@ -103,7 +111,7 @@
     const render = () => {
         if (!feed) return;
         fillLatest(feed.columns);
-        fill('columns-grid', (feed.columns || []).slice(0, 4), { cat: 'Yeni Nesil TV', featureFirst: true });
+        fill('columns-grid', (feed.columns || []).slice(0, 4), { cat: 'Yeni Nesil TV', featureFirst: true, eager: true });
         fill('videos-grid', (feed.videos || []).slice(0, 6), { cat: 'YouTube' });
         fill('guides-grid', (feed.guides || []).slice(0, 6), { cat: 'Tüm Cezalar' });
     };
@@ -137,10 +145,25 @@
         const submit = $('#cf-submit');
         const started = $('#cf-started');
         if (started) started.value = String(Date.now());
+
+        // Turnstile is ~1.8 MB: load it only once the visitor starts using the form.
+        let tsLoaded = false;
+        const loadTurnstile = () => {
+            if (tsLoaded) return;
+            tsLoaded = true;
+            const s = document.createElement('script');
+            s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+            s.async = true;
+            document.head.append(s);
+        };
+        form.addEventListener('focusin', loadTurnstile, { once: true });
+        form.addEventListener('pointerdown', loadTurnstile, { once: true });
+
         const msg = {
             sending: ['Gönderiliyor…', 'Sending…'],
             ok: ['Teşekkürler, mesajınız iletildi. En kısa sürede dönüş yapılacak.', 'Thank you, your message has been delivered.'],
             validation: ['Lütfen işaretli alanları kontrol edin.', 'Please check the highlighted fields.'],
+            captcha: ['Güvenlik doğrulaması tamamlanmadı. Lütfen kutucuğu onaylayıp tekrar deneyin.', 'Security check incomplete. Please complete it and try again.'],
             rate_limited: ['Çok fazla deneme yapıldı. Lütfen bir saat sonra tekrar deneyin.', 'Too many attempts. Please try again in an hour.'],
             error: ['Mesaj gönderilemedi. Lütfen ahmetrifatalbuz@gmail.com adresine e-posta gönderin.', 'Could not send. Please email ahmetrifatalbuz@gmail.com.'],
         };
@@ -171,12 +194,13 @@
                     (j.fields || []).forEach((f) => document.getElementById(fieldMap[f])?.setAttribute('aria-invalid', 'true'));
                     say('validation', 'err');
                 } else {
-                    say(j.error === 'rate_limited' ? 'rate_limited' : 'error', 'err');
+                    say(['rate_limited', 'captcha'].includes(j.error) ? j.error : 'error', 'err');
                 }
             } catch {
                 say('error', 'err');
             } finally {
                 submit.disabled = false;
+                try { window.turnstile?.reset(); } catch { /* widget not loaded */ }
             }
         });
     }

@@ -11,7 +11,11 @@ assert.match(html, /id="kanallar"/, 'new layout live');
 assert.match(html, /yeninesil-logo-white\.png/, 'logo');
 assert.ok(home.headers.get('content-security-policy'), 'csp');
 
-for (const p of ['/kvkk', '/robots.txt', '/sitemap.xml', '/assets/yeninesil-logo-white.png', '/style.css', '/script.js']) {
+const enPage = await get('/en/');
+assert.equal(enPage.status, 200, '/en/');
+assert.match(await enPage.text(), /<html lang="en">/, 'en lang');
+
+for (const p of ['/kvkk','/robots.txt', '/sitemap.xml', '/assets/yeninesil-logo-white.png', '/style.css', '/script.js']) {
   const r = await get(p);
   assert.equal(r.status, 200, p);
 }

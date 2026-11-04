@@ -1,5 +1,5 @@
 // ahmetrifatalbuz.com site API Worker. Routes: GET /api/feed, POST /api/contact, GET /api/health.
-import { SOURCES, normalizeWpList, parseYoutubeFeed, validateContact, buildMailText } from './lib.js';
+import { SOURCES, normalizeWpList, parseYoutubeFeed, validateContact, buildMailText, verifyTurnstile } from './lib.js';
 
 const FEED_TTL = 1800; // seconds
 const RATE_LIMIT = 5; // messages per IP per hour
@@ -39,7 +39,7 @@ export async function buildFeed() {
 
 async function handleFeed(request, ctx) {
   const cache = caches.default;
-  const key = new Request(new URL('/api/feed', request.url).toString(), { method: 'GET' });
+  const key = new Request(new URL('/api/feed?v=2', request.url).toString(), { method: 'GET' });
   const hit = await cache.match(key);
   if (hit) return hit;
   const feed = await buildFeed();
@@ -71,6 +71,8 @@ async function handleContact(request, env) {
 
   const ip = request.headers.get('cf-connecting-ip') || 'unknown';
   const country = request.headers.get('cf-ipcountry') || '-';
+  const ts = await verifyTurnstile(body['cf-turnstile-response'], env.TURNSTILE_SECRET, ip === 'unknown' ? null : ip);
+  if (!ts.ok) return json({ ok: false, error: 'captcha' }, 403);
   if (env.INBOX) {
     const rlKey = `rl:${ip}:${new Date().toISOString().slice(0, 13)}`;
     const n = Number((await env.INBOX.get(rlKey)) || 0);
@@ -109,7 +111,7 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === '/api/feed' && request.method === 'GET') return handleFeed(request, ctx);
     if (url.pathname === '/api/contact' && request.method === 'POST') return handleContact(request, env);
-    if (url.pathname === '/api/health') return json({ ok: true, email: Boolean(env.EMAIL), inbox: Boolean(env.INBOX) });
+    if (url.pathname === '/api/health') return json({ ok: true, email: Boolean(env.EMAIL), inbox: Boolean(env.INBOX), turnstile: Boolean(env.TURNSTILE_SECRET) });
     return json({ ok: false, error: 'not_found' }, 404);
   },
 };
