@@ -1,4 +1,4 @@
-# ahmetrifatalbuz.com Ağı — 360° Omega Analiz Raporu
+﻿# ahmetrifatalbuz.com Ağı — 360° Omega Analiz Raporu
 
 **Tarih:** 4 Kasım 2026 · **Kapsam:** ahmetrifatalbuz.com (Cloudflare Pages `ahmet-rifat-albuz`), arn-site-api Worker, yeninesil.tv ve tumcezalar.com (WordPress) arası trafik ağı.
 **Durum:** Yeni site canlıda (Pages production, 4 Kasım 2026). Canlı duman testi geçti: `LIVE SITE OK: columns=7 guides=6 videos=6`.
@@ -42,7 +42,6 @@ Ziyaretçi ─► ahmetrifatalbuz.com (Cloudflare Pages, statik + _middleware)
 3. **DMARC yok.** `_dmarc.ahmetrifatalbuz.com` kaydı bulunmuyor, bu da sahte gönderime açık kapı bırakıyor.
 4. **WordPress eklentisi henüz kurulmadı.** Karşılıklı trafiğin yarısı (yeninesil ⇄ tumcezalar) kurulumu bekliyor.
 5. **Pages Git'e bağlı değil.** Yayın, doğrudan yükleme (`scripts/deploy.ps1`) ile yapılıyor; push edince otomatik yayın yok, CI yok.
-6. **Eski Vercel projesi** `ahmetrifatalbuz` hesapta duruyor. Karışıklık riski var.
 7. **Çelişkili içerik** doğrulanmadı (bkz. Bölüm 5.3).
 8. **Ölçüm eksik.** Search Console bağlı değil; UTM var ama raporlanmıyor.
 9. **Lighthouse/axe ölçülmedi.** Performans ve erişilebilirlik puanları tahmindir.
@@ -58,7 +57,7 @@ Ziyaretçi ─► ahmetrifatalbuz.com (Cloudflare Pages, statik + _middleware)
 
 | # | Alt başlık | Max | Önce | Şimdi | Not |
 |---|---|---:|---:|---:|---|
-| 1 | Altyapı & hosting | 100 | 70 | 85 | Pages + Worker route. CI yok, Vercel artığı var |
+| 1 | Altyapı & hosting | 100 | 70 | 85 | Pages + Worker route. CI yok |
 | 2 | Performans | 100 | 60 | 80 | Font Awesome CDN kalktı, ağır animasyonlar kalktı. *Lighthouse ölçülmedi* |
 | 3 | SEO & yapısal veri | 120 | 55 | 100 | canonical, twitter name=, JSON-LD @graph, sitemap, robots. EN URL yok |
 | 4 | Erişilebilirlik | 80 | 40 | 65 | skip-link, aria-live, aria-pressed, reduced-motion. *axe ölçülmedi* |
@@ -82,7 +81,6 @@ Ziyaretçi ─► ahmetrifatalbuz.com (Cloudflare Pages, statik + _middleware)
 5. **İçerik çakışmalarını** Ahmet Bey'e doğrulatın (+20 içerik).
 6. **Search Console**'a 3 siteyi ekleyin, sitemap gönderin; UTM raporunu (Cloudflare/GA4) kurun (+20 ölçüm, +5 SEO).
 7. **Pages'i GitHub'a bağlayın** veya GitHub Actions + `wrangler pages deploy` kurun (+10 altyapı, +8 operasyon).
-8. **Vercel artık projesini** silin (+5 altyapı).
 9. **Lighthouse ve axe ölçümü** yapın, bulunan sorunları kapatın (+20 performans, +15 erişilebilirlik).
 10. **`/en/` sayfası** ve hreflang ekleyin; `/yazilar` arşiv sayfasını sunucu tarafında render edin (+15 SEO).
 11. **Takipçi sayılarını** YouTube Data API ile otomatik güncelleyin (+10 içerik).
@@ -116,7 +114,6 @@ Ziyaretçi ─► ahmetrifatalbuz.com (Cloudflare Pages, statik + _middleware)
 | 2 | WP eklentisini yeninesil.tv ve tumcezalar.com'a yükleme | Patron/Ahmet | 2×2 dk |
 | 3 | Çelişkili içerik listesini doğrulama (5.3) | Ahmet | 5 dk |
 | 4 | Search Console'a 3 site ekleme | Patron | 10 dk |
-| 5 | Vercel `ahmetrifatalbuz` projesini silme kararı | Patron | 1 dk |
 | 6 | DMARC kaydını onaylama | Patron | 1 dk |
 
 ### 5.3 Doğrulanacak içerik (değiştirilmedi)
@@ -178,7 +175,6 @@ node tests/live-site.mjs
 3. İçerik doğrulama listesi 5.3 (+35)
 4. Search Console 3 site + sitemap (+20)
 5. DMARC kaydı `p=none` (DNS düzenleme yetkili token gerekiyor) (+10)
-6. Vercel artık projesini silme (+5)
 7. Pages'i GitHub'a bağlama veya CI'ya `CLOUDFLARE_API_TOKEN` secret ekleme (otomatik yayın) (+10)
 8. Performans: köşe yazılarını sunucu tarafında HTML'e gömme (LCP'yi API beklemesinden kurtarır) (+15) — sonraki teknik adım
 9. Yeni Nesil'de yazılara özgün öne çıkan görsel, takipçi sayılarının otomatik güncellenmesi (+32)
@@ -202,7 +198,6 @@ node tests/live-site.mjs
 | 3 | Çelişkili içerik (5.3) | Gerçeği sadece Ahmet Bey biliyor. Uydurursam yanlış bilgi yayınlanır | 5 soruyu cevaplayın |
 | 4 | Search Console | Google hesabıyla **giriş + doğrulama** gerekiyor | search.google.com/search-console → 3 site ekle |
 | 5 | DMARC kaydı | Elimdeki Cloudflare yetkisinde DNS düzenleme yok | DNS → TXT `_dmarc` = `v=DMARC1; p=none; rua=mailto:ahmetrifatalbuz@gmail.com` |
-| 6 | Vercel artık projesi | Kalıcı **silme** işlemi; onay olmadan yapılmaz | Vercel → Project → Delete (veya bana "sil" deyin) |
 | 7 | Push edince otomatik yayın | GitHub'a Cloudflare API anahtarı (secret) eklemek gerekiyor | Cloudflare'de "Edit Pages" token oluşturup GitHub Secrets'a ekleyin |
 | 8 | Takipçi sayılarının otomatik güncellenmesi | X/LinkedIn resmi API anahtarı gerektiriyor. Scraping güvenilmez | YouTube Data API anahtarı verirseniz YouTube kısmını bağlarım |
 
