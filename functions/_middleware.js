@@ -10,6 +10,14 @@ const FEED_TTL = 1800;
 const FEED_TIMEOUT_MS = 1500;
 
 async function getFeed(ctx) {
+  // Fast path: the API Worker serves a KV snapshot refreshed every 15 minutes (same zone route).
+  try {
+    const r = await fetch(new URL('/api/feed', ctx.request.url), { headers: { accept: 'application/json' }, cf: { cacheTtl: 60 } });
+    if (r.ok && (r.headers.get('content-type') || '').includes('application/json')) {
+      const f = await r.json();
+      if (f?.columns?.length) return f;
+    }
+  } catch { /* fall through to live build */ }
   const cache = caches.default;
   const key = new Request('https://ahmetrifatalbuz.com/__ssr-feed?v=1');
   const hit = await cache.match(key);

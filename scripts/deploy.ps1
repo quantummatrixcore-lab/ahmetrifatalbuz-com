@@ -5,7 +5,7 @@ $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 Set-Location $root
 
-node --test tests/lib.test.mjs tests/site.test.mjs
+node --test tests/lib.test.mjs tests/site.test.mjs tests/snapshot.test.mjs
 if ($LASTEXITCODE -ne 0) { throw 'Tests failed, deploy aborted.' }
 
 node scripts/build.mjs

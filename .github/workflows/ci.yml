@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 22
       - name: Unit + site tests
-        run: node --test tests/lib.test.mjs tests/site.test.mjs
+        run: node --test tests/lib.test.mjs tests/site.test.mjs tests/snapshot.test.mjs
       - name: Build
         run: node scripts/build.mjs
       - name: Live production smoke check

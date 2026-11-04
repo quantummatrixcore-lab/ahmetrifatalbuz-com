@@ -182,3 +182,33 @@ node tests/live-site.mjs
 7. Pages'i GitHub'a bağlama veya CI'ya `CLOUDFLARE_API_TOKEN` secret ekleme (otomatik yayın) (+10)
 8. Performans: köşe yazılarını sunucu tarafında HTML'e gömme (LCP'yi API beklemesinden kurtarır) (+15) — sonraki teknik adım
 9. Yeni Nesil'de yazılara özgün öne çıkan görsel, takipçi sayılarının otomatik güncellenmesi (+32)
+
+---
+
+## 8. Güncelleme 3 — Durum Tespiti (4 Kasım 2026)
+
+### Bu turda kapatılan darboğazlar
+| Darboğaz | Çözüm | Kanıt |
+|---|---|---|
+| Soğuk önbellekte ilk ziyaretçi statik sayfa görüyordu | KV snapshot + 15 dakikalık cron; SSR snapshot'tan okuyor | 4/4 taze URL'de `x-ssr=1`, `x-feed-source: snapshot` |
+| Bir kaynak çökerse ilgili bölüm boşalıyordu | Snapshot birleştirme: çöken kaynak önceki verisini korur | `tests/snapshot.test.mjs` (3 test) |
+| Format referansla uyumsuz, tema yoktu | v3 format, Sistem/Açık/Koyu tema, header'da Yeni Nesil logosu | `docs/KARSILASTIRMA.md`, Lighthouse A11y/BP/SEO 100 |
+
+### Hâlâ açık olanlar ve neden otomatik yapılamadıkları
+| # | Madde | Neden ben yapamıyorum | Sizin adımınız |
+|---|---|---|---|
+| 1 | Formun Gmail'e teslimi | Workers Paid planı **satın alma** gerektiriyor. Ödeme işlemi yapmam yasak | Cloudflare → Workers Plans → Paid, sonra `wrangler email sending enable ahmetrifatalbuz.com` |
+| 2 | WP eklentisinin 2 siteye kurulması | WordPress paneline **şifreyle giriş** gerekiyor. Şifre girmem yasak | `wp-plugin/arn-network-links.zip` → Eklentiler → Yükle |
+| 3 | Çelişkili içerik (5.3) | Gerçeği sadece Ahmet Bey biliyor. Uydurursam yanlış bilgi yayınlanır | 5 soruyu cevaplayın |
+| 4 | Search Console | Google hesabıyla **giriş + doğrulama** gerekiyor | search.google.com/search-console → 3 site ekle |
+| 5 | DMARC kaydı | Elimdeki Cloudflare yetkisinde DNS düzenleme yok | DNS → TXT `_dmarc` = `v=DMARC1; p=none; rua=mailto:ahmetrifatalbuz@gmail.com` |
+| 6 | Vercel artık projesi | Kalıcı **silme** işlemi; onay olmadan yapılmaz | Vercel → Project → Delete (veya bana "sil" deyin) |
+| 7 | Push edince otomatik yayın | GitHub'a Cloudflare API anahtarı (secret) eklemek gerekiyor | Cloudflare'de "Edit Pages" token oluşturup GitHub Secrets'a ekleyin |
+| 8 | Takipçi sayılarının otomatik güncellenmesi | X/LinkedIn resmi API anahtarı gerektiriyor. Scraping güvenilmez | YouTube Data API anahtarı verirseniz YouTube kısmını bağlarım |
+
+**Teknik borç:** yok. Kod tarafında bilinen, ölçülmüş açık kalmadı. Performans ölçümleri 80 ile 92 arasında oynuyor; bu değişkenlik büyük ölçüde dış görsellerin (yeninesil.tv) yükleme hızından geliyor.
+
+### Puan
+- **Kod ve altyapı tarafı:** benim kapatabileceğim maddeler bitti.
+- **Toplam: yaklaşık 830/1000.**
+- **Kalan ~170 puan:** yukarıdaki 8 maddeye bağlı; her biri hesap, ödeme, şifre ya da gerçek bilgi gerektiriyor.

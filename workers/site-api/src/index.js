@@ -37,16 +37,30 @@ export async function buildFeed() {
   };
 }
 
-async function handleFeed(request, ctx) {
-  const cache = caches.default;
-  const key = new Request(new URL('/api/feed?v=2', request.url).toString(), { method: 'GET' });
-  const hit = await cache.match(key);
-  if (hit) return hit;
-  const feed = await buildFeed();
+const SNAPSHOT_KEY = 'feed:latest';
+const SNAPSHOT_MAX_AGE_MS = 3 * 3600 * 1000;
+
+/** Rebuilds the feed and stores it in KV. A failed source keeps its previous items (no empty sections). */
+export async function refreshSnapshot(env, build = buildFeed) {
+  const fresh = await build();
+  const prev = env.INBOX ? await env.INBOX.get(SNAPSHOT_KEY, 'json').catch(() => null) : null;
+  const merged = { ...fresh };
+  for (const k of ['columns', 'guides', 'videos']) if (!merged[k]?.length && prev?.[k]?.length) merged[k] = prev[k];
+  if (env.INBOX && merged.columns?.length) await env.INBOX.put(SNAPSHOT_KEY, JSON.stringify(merged));
+  return merged;
+}
+
+async function handleFeed(request, env, ctx) {
+  // 1) KV snapshot (refreshed every 15 min by cron) -> fast, global, no cold start.
+  const snap = env.INBOX ? await env.INBOX.get(SNAPSHOT_KEY, 'json').catch(() => null) : null;
+  if (snap?.columns?.length) {
+    if (Date.now() - Date.parse(snap.updated) > SNAPSHOT_MAX_AGE_MS) ctx.waitUntil(refreshSnapshot(env).catch(() => {}));
+    return json(snap, 200, { 'cache-control': 'public, max-age=300', 'x-feed-source': 'snapshot' });
+  }
+  // 2) No snapshot yet: build live, store, serve.
+  const feed = await refreshSnapshot(env);
   const ttl = feed.errors.length ? 120 : FEED_TTL;
-  const res = json(feed, 200, { 'cache-control': `public, max-age=${ttl}, s-maxage=${ttl}` });
-  ctx.waitUntil(cache.put(key, res.clone()));
-  return res;
+  return json(feed, 200, { 'cache-control': `public, max-age=${Math.min(ttl, 300)}`, 'x-feed-source': 'live' });
 }
 
 async function readBody(request) {
@@ -109,9 +123,12 @@ async function handleContact(request, env) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    if (url.pathname === '/api/feed' && request.method === 'GET') return handleFeed(request, ctx);
+    if (url.pathname === '/api/feed' && request.method === 'GET') return handleFeed(request, env, ctx);
     if (url.pathname === '/api/contact' && request.method === 'POST') return handleContact(request, env);
     if (url.pathname === '/api/health') return json({ ok: true, email: Boolean(env.EMAIL), inbox: Boolean(env.INBOX), turnstile: Boolean(env.TURNSTILE_SECRET) });
     return json({ ok: false, error: 'not_found' }, 404);
+  },
+  async scheduled(_event, env, ctx) {
+    ctx.waitUntil(refreshSnapshot(env));
   },
 };
