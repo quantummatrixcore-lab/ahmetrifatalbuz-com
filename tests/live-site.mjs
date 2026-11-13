@@ -19,7 +19,11 @@ assert.match(html, /yeninesil-logo-white\.png/, 'logo');
 assert.ok(home.headers.get('content-security-policy'), 'csp');
 assert.equal(home.headers.get('x-ssr'), '1', 'server-side rendered');
 assert.equal(home.headers.get('x-ssr-feed'), 'worker-kv', 'home rendered by Worker from KV snapshot');
-assert.doesNotMatch(html, /<div class="card-media"><img src="[^"]*(ahmetrifatalbuz|\/ara)-?/, 'no author portrait as article image');
+// Same filename rule as AUTHOR_IMAGE_RE in workers/site-api/src/lib.js ("/ara-400x225.jpg", not "/araca-...").
+const PORTRAIT_IMG = /<div class="card-media"><img src="[^"]*\/(ahmetrifatalbuz|ara)(-\d+x\d+)?\.(jpe?g|png|webp)"/i;
+assert.match('<div class="card-media"><img src="https://y.tv/u/ara-400x225.jpg"', PORTRAIT_IMG, 'portrait rule self-check');
+assert.doesNotMatch('<div class="card-media"><img src="https://y.tv/u/araca-agac-660x365.jpg"', PORTRAIT_IMG, 'portrait rule self-check');
+assert.doesNotMatch(html, PORTRAIT_IMG, 'no author portrait as article image');
 const bannerMain = html.slice(html.indexOf('id="banner-main"'), html.indexOf('id="banner-side"'));
 if (/card-media--cover/.test(bannerMain)) assert.doesNotMatch(html, /<link rel="preload" as="image"/, 'no preload for cover');
 else assert.match(html, /<link rel="preload" as="image"/, 'LCP preload for real image');
